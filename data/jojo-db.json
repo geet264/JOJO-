@@ -1,0 +1,397 @@
+{
+  "profile": {
+    "id": "user_1",
+    "fullName": "Geeta Jogi",
+    "email": "geeta.jogi@altisec.com",
+    "phone": "+91 98765 43210",
+    "location": "Bangalore, India (Open to Remote / Hybrid)",
+    "currentTitle": "DevSecOps Engineer",
+    "targetTitles": [
+      "Senior DevSecOps Engineer",
+      "Cloud Security Specialist",
+      "DevOps & Security Lead"
+    ],
+    "summary": "DevSecOps specialist with expertise in building secure CI/CD pipelines, container security, vulnerability management, cloud infrastructure (AWS/Azure), and automating compliance.",
+    "yearsOfExperience": 4,
+    "currentCTC": "14 LPA",
+    "expectedCTC": "22 - 25 LPA",
+    "noticePeriod": "30 Days / Serving Notice",
+    "skills": [
+      {
+        "name": "DevSecOps",
+        "level": "Expert",
+        "category": "Security & Ops"
+      },
+      {
+        "name": "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "level": "Expert",
+        "category": "DevOps"
+      },
+      {
+        "name": "Docker & Kubernetes",
+        "level": "Expert",
+        "category": "Containers"
+      },
+      {
+        "name": "AWS Cloud Security",
+        "level": "Intermediate",
+        "category": "Cloud"
+      },
+      {
+        "name": "Terraform (IaC)",
+        "level": "Intermediate",
+        "category": "Infra"
+      },
+      {
+        "name": "SonarQube & SAST/DAST",
+        "level": "Expert",
+        "category": "AppSec"
+      },
+      {
+        "name": "Trivy / Container Scanning",
+        "level": "Expert",
+        "category": "AppSec"
+      },
+      {
+        "name": "Python / Bash Scripting",
+        "level": "Intermediate",
+        "category": "Scripting"
+      },
+      {
+        "name": "Linux Administration",
+        "level": "Intermediate",
+        "category": "OS"
+      }
+    ],
+    "experiences": [
+      {
+        "id": "exp_1",
+        "role": "DevSecOps Engineer",
+        "company": "AltiSec Technologies Pvt. Ltd",
+        "location": "Bangalore, India",
+        "startDate": "2023-01",
+        "endDate": "",
+        "isCurrent": true,
+        "description": "Architected automated SAST/DAST scanning in Jenkins and GitHub Actions pipelines. Reduced vulnerability remediation time by 45%. Managed AWS IAM, EKS clusters, and Terraform configurations."
+      },
+      {
+        "id": "exp_2",
+        "role": "Cloud & DevOps Associate",
+        "company": "CloudMatrix Solutions",
+        "location": "Pune, India",
+        "startDate": "2021-06",
+        "endDate": "2022-12",
+        "isCurrent": false,
+        "description": "Automated deployment pipelines, implemented Trivy image scanning, and maintained Linux production servers."
+      }
+    ],
+    "education": [
+      {
+        "id": "edu_1",
+        "degree": "B.Tech in Computer Science / Information Technology",
+        "institution": "State Technical University",
+        "year": "2017 - 2021"
+      }
+    ],
+    "certifications": [
+      {
+        "id": "cert_1",
+        "name": "AWS Certified Security - Specialty",
+        "issuer": "Amazon Web Services",
+        "year": "2024",
+        "credentialUrl": "https://aws.amazon.com/certification"
+      },
+      {
+        "id": "cert_2",
+        "name": "Certified Kubernetes Administrator (CKA)",
+        "issuer": "Linux Foundation / CNCF",
+        "year": "2023"
+      }
+    ],
+    "links": {
+      "linkedin": "https://linkedin.com/in/geeta-jogi",
+      "naukri": "https://naukri.com/mnjuser/profile",
+      "github": "https://github.com/geetajogi",
+      "portfolio": "https://geetajogi.dev"
+    },
+    "lastSyncedAt": "Just now",
+    "updatedAt": "2026-10-28T09:41:02.113Z"
+  },
+  "jobs": [
+    {
+      "id": "job_1",
+      "title": "Senior DevSecOps Engineer",
+      "company": "PhonePe",
+      "platform": "LinkedIn",
+      "location": "Bangalore (Hybrid)",
+      "workplaceType": "Hybrid",
+      "salary": "₹24 - ₹30 LPA",
+      "experienceRequired": "3-6 years",
+      "description": "Looking for a Senior DevSecOps Engineer to secure our fintech payment infrastructure. Must have strong hands-on experience with Kubernetes, CI/CD security, SAST/DAST, and AWS.",
+      "requiredSkills": [
+        "DevSecOps",
+        "Docker & Kubernetes",
+        "AWS Cloud Security",
+        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "SonarQube & SAST/DAST",
+        "Terraform (IaC)"
+      ],
+      "postedDate": "2 hours ago",
+      "url": "https://linkedin.com/jobs/view/devsecops-phonepe",
+      "matchScore": 95,
+      "matchedSkills": [
+        "DevSecOps",
+        "Docker & Kubernetes",
+        "AWS Cloud Security",
+        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "SonarQube & SAST/DAST",
+        "Terraform (IaC)"
+      ],
+      "missingSkills": [],
+      "applicationStage": "Wishlist",
+      "notes": "Strong match for payment gateway security compliance team."
+    },
+    {
+      "id": "job_2",
+      "title": "Cloud Security & DevSecOps Lead",
+      "company": "Razorpay",
+      "platform": "Naukri",
+      "location": "Bangalore / Remote",
+      "workplaceType": "Remote",
+      "salary": "₹26 - ₹32 LPA",
+      "experienceRequired": "4-7 years",
+      "description": "Lead DevSecOps practices across engineering squads. Implement shift-left security tooling, container governance (Trivy), and cloud infrastructure guardrails.",
+      "requiredSkills": [
+        "DevSecOps",
+        "AWS Cloud Security",
+        "Trivy / Container Scanning",
+        "Docker & Kubernetes",
+        "Terraform (IaC)",
+        "Golang"
+      ],
+      "postedDate": "1 day ago",
+      "url": "https://naukri.com/job-listings-devsecops-razorpay",
+      "matchScore": 72,
+      "matchedSkills": [
+        "DevSecOps",
+        "AWS Cloud Security",
+        "Trivy / Container Scanning",
+        "Docker & Kubernetes",
+        "Terraform (IaC)"
+      ],
+      "missingSkills": [
+        "Golang"
+      ],
+      "applicationStage": "Applied",
+      "appliedDate": "2026-10-27",
+      "notes": "Applied via Naukri 1-click apply."
+    },
+    {
+      "id": "job_3",
+      "title": "DevOps & AppSec Specialist",
+      "company": "Zomato",
+      "platform": "LinkedIn",
+      "location": "Gurgaon / Remote",
+      "workplaceType": "Hybrid",
+      "salary": "₹22 - ₹28 LPA",
+      "experienceRequired": "3-5 years",
+      "description": "We are expanding our reliability and security engineering team. Automate security gates in CI/CD, conduct container scans, and manage secrets.",
+      "requiredSkills": [
+        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "Trivy / Container Scanning",
+        "SonarQube & SAST/DAST",
+        "Linux Administration",
+        "Python / Bash Scripting"
+      ],
+      "postedDate": "3 days ago",
+      "url": "https://linkedin.com/jobs/view/appsec-zomato",
+      "matchScore": 82,
+      "matchedSkills": [
+        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "Trivy / Container Scanning",
+        "SonarQube & SAST/DAST",
+        "Linux Administration",
+        "Python / Bash Scripting"
+      ],
+      "missingSkills": [],
+      "applicationStage": "Screening",
+      "appliedDate": "2026-10-25",
+      "notes": "HR call scheduled for Thursday 3:00 PM."
+    },
+    {
+      "id": "job_4",
+      "title": "Security Operations & DevSecOps Engineer",
+      "company": "Swiggy",
+      "platform": "Naukri",
+      "location": "Bangalore",
+      "workplaceType": "On-site",
+      "salary": "₹25 - ₹30 LPA",
+      "experienceRequired": "4-6 years",
+      "description": "Embed security into every stage of the software delivery cycle. Partner with SREs to build automated monitoring, Falco runtime protection, and IaC security.",
+      "requiredSkills": [
+        "DevSecOps",
+        "Docker & Kubernetes",
+        "AWS Cloud Security",
+        "Falco Runtime Security",
+        "Terraform (IaC)"
+      ],
+      "postedDate": "4 days ago",
+      "url": "https://naukri.com/job-listings-swiggy-devsecops",
+      "matchScore": 80,
+      "matchedSkills": [
+        "DevSecOps",
+        "Docker & Kubernetes",
+        "AWS Cloud Security",
+        "Terraform (IaC)"
+      ],
+      "missingSkills": [
+        "Falco Runtime Security"
+      ],
+      "applicationStage": "Technical",
+      "appliedDate": "2026-10-22",
+      "notes": "Round 1 technical cleared with Lead Architect. Preparing for system design round."
+    },
+    {
+      "id": "job_5",
+      "title": "Data Platform Engineer (Spark / Hadoop)",
+      "company": "Target India",
+      "platform": "Indeed",
+      "location": "Bangalore",
+      "workplaceType": "Hybrid",
+      "salary": "₹18 - ₹24 LPA",
+      "experienceRequired": "3-5 years",
+      "description": "Looking for Big Data engineer specializing in Apache Spark, Scala, Hadoop clusters, and Databricks data lakehouse pipelines.",
+      "requiredSkills": [
+        "Apache Spark",
+        "Scala",
+        "Hadoop",
+        "Databricks",
+        "SQL"
+      ],
+      "postedDate": "5 days ago",
+      "url": "https://indeed.com/viewjob?jk=data-platform-target",
+      "matchScore": 18,
+      "matchedSkills": [],
+      "missingSkills": [
+        "Apache Spark",
+        "Scala",
+        "Hadoop",
+        "Databricks",
+        "SQL"
+      ],
+      "applicationStage": "Wishlist"
+    },
+    {
+      "id": "job_6",
+      "title": "DevOps / Cloud Platform Engineer",
+      "company": "InMobi",
+      "platform": "LinkedIn",
+      "location": "Bangalore",
+      "workplaceType": "Hybrid",
+      "salary": "₹23 - ₹27 LPA",
+      "experienceRequired": "3-5 years",
+      "description": "Build scalable CI/CD pipelines, containerize microservices, manage AWS cloud infrastructure and automate observability stacks.",
+      "requiredSkills": [
+        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "Docker & Kubernetes",
+        "AWS Cloud Security",
+        "Terraform (IaC)",
+        "Linux Administration"
+      ],
+      "postedDate": "12 hours ago",
+      "url": "https://linkedin.com/jobs/view/inmobi-devops",
+      "matchScore": 80,
+      "matchedSkills": [
+        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "Docker & Kubernetes",
+        "AWS Cloud Security",
+        "Terraform (IaC)",
+        "Linux Administration"
+      ],
+      "missingSkills": [],
+      "applicationStage": "Wishlist"
+    },
+    {
+      "id": "job_7",
+      "title": "Frontend React & UI Engineer",
+      "company": "Freshworks",
+      "platform": "Glassdoor",
+      "location": "Chennai / Remote",
+      "workplaceType": "Remote",
+      "salary": "₹16 - ₹22 LPA",
+      "experienceRequired": "3-5 years",
+      "description": "Passionate UI developer experienced in React, Next.js, Redux, and Tailwind CSS design systems.",
+      "requiredSkills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "CSS",
+        "Redux"
+      ],
+      "postedDate": "2 days ago",
+      "url": "https://glassdoor.com/job-listing/freshworks-ui",
+      "matchScore": 18,
+      "matchedSkills": [],
+      "missingSkills": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "CSS",
+        "Redux"
+      ],
+      "applicationStage": "Wishlist"
+    }
+  ],
+  "platforms": [
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "logo": "💼",
+      "status": "Connected",
+      "lastSyncedAt": "Just now",
+      "accountEmail": "geeta.jogi@altisec.com"
+    },
+    {
+      "id": "naukri",
+      "name": "Naukri.com",
+      "logo": "🚀",
+      "status": "Connected",
+      "lastSyncedAt": "Just now",
+      "accountEmail": "geeta.jogi@altisec.com"
+    },
+    {
+      "id": "indeed",
+      "name": "Indeed India",
+      "logo": "🌐",
+      "status": "Connected",
+      "lastSyncedAt": "Just now",
+      "accountEmail": "geeta.jogi@altisec.com"
+    }
+  ],
+  "syncLogs": [
+    {
+      "id": "log_1793180593584_1",
+      "timestamp": "Today, 03:13 pm",
+      "platform": "Naukri.com",
+      "message": "Synced 9 skills & updated experience"
+    },
+    {
+      "id": "log_1793180593584_2",
+      "timestamp": "Today, 03:13 pm",
+      "platform": "LinkedIn",
+      "message": "Headline & profile summary synchronized"
+    },
+    {
+      "id": "log_1",
+      "timestamp": "3:11:02 pm",
+      "platform": "Naukri",
+      "message": "Profile skills and current experience synced to Naukri.com"
+    },
+    {
+      "id": "log_2",
+      "timestamp": "3:11:02 pm",
+      "platform": "LinkedIn",
+      "message": "Updated headline and DevSecOps certifications on LinkedIn"
+    }
+  ]
+}
