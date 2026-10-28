@@ -118,9 +118,9 @@ export const JobFeedView: React.FC<JobFeedViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="space-y-6 w-full pb-16">
       {/* Top Header & Search Bar */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -193,8 +193,8 @@ export const JobFeedView: React.FC<JobFeedViewProps> = ({
         </div>
       </div>
 
-      {/* Jobs Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Jobs Grid (Responsive 4 columns on large screens) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredJobs.map((job) => {
           const isHighMatch = job.matchScore >= 70;
           return (
@@ -274,7 +274,7 @@ export const JobFeedView: React.FC<JobFeedViewProps> = ({
                   </div>
 
                   <div className="flex flex-wrap gap-1.5">
-                    {job.matchedSkills.map((sk) => (
+                    {job.matchedSkills.slice(0, 4).map((sk) => (
                       <span
                         key={sk}
                         className="inline-flex items-center gap-1 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-2 py-0.5 rounded-md"
@@ -295,14 +295,14 @@ export const JobFeedView: React.FC<JobFeedViewProps> = ({
                   </div>
                 </div>
 
-                {/* AI Tailor Action Button (Teal / Simplify style) */}
+                {/* AI Tailor Action Button */}
                 <div className="pt-2">
                   <button
                     onClick={() => onOpenTailorForJob(job)}
                     className="w-full flex items-center justify-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs py-2 rounded-xl border border-indigo-200 transition-all shadow-2xs"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                    <span>AI Tailor Resume &amp; Cover Letter</span>
+                    <span>AI Tailor Resume &amp; Bullets</span>
                   </button>
                 </div>
               </div>
@@ -354,125 +354,6 @@ export const JobFeedView: React.FC<JobFeedViewProps> = ({
           );
         })}
       </div>
-
-      {filteredJobs.length === 0 && (
-        <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
-          <Sparkles className="w-10 h-10 text-indigo-400 mx-auto" />
-          <h3 className="text-base font-bold text-slate-800">No jobs match your filter</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try unchecking &quot;Show Only High Match&quot; or add more skills to your profile to increase your match percentage!
-          </p>
-        </div>
-      )}
-
-      {/* Add Job Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-slate-900">Add New Job to Score & Track</h2>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-slate-700 text-sm font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateJob} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Job Title</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Cloud Security Architect"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full text-xs border rounded-lg px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Company</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Cisco"
-                    value={newCompany}
-                    onChange={(e) => setNewCompany(e.target.value)}
-                    className="w-full text-xs border rounded-lg px-3 py-2"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Platform</label>
-                  <select
-                    value={newPlatform}
-                    onChange={(e) => setNewPlatform(e.target.value as any)}
-                    className="w-full text-xs border rounded-lg px-3 py-2 bg-white"
-                  >
-                    <option value="LinkedIn">LinkedIn</option>
-                    <option value="Naukri">Naukri</option>
-                    <option value="Indeed">Indeed</option>
-                    <option value="Direct">Direct Career Page</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Salary</label>
-                  <input
-                    type="text"
-                    value={newSalary}
-                    onChange={(e) => setNewSalary(e.target.value)}
-                    className="w-full text-xs border rounded-lg px-3 py-2"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Required Skills (Comma separated)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. DevSecOps, AWS, Kubernetes, Terraform"
-                  value={newSkillsStr}
-                  onChange={(e) => setNewSkillsStr(e.target.value)}
-                  className="w-full text-xs border rounded-lg px-3 py-2"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Job URL / Link</label>
-                <input
-                  type="text"
-                  placeholder="https://..."
-                  value={newUrl}
-                  onChange={(e) => setNewUrl(e.target.value)}
-                  className="w-full text-xs border rounded-lg px-3 py-2"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm"
-                >
-                  Calculate Match & Add
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

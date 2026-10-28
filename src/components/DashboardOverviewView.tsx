@@ -19,6 +19,7 @@ import {
   Award,
   RefreshCw
 } from 'lucide-react';
+import { NetworkConnectorHub } from './NetworkConnectorHub';
 
 interface DashboardOverviewViewProps {
   profile: UserProfile;
@@ -68,27 +69,27 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
   const topMatchJob = [...highMatchJobs].sort((a, b) => b.matchScore - a.matchScore)[0];
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-16">
+    <div className="space-y-8 w-full pb-16">
       {/* Hero Welcome & Quick Command Bar */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>Job Hunt Command Center</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
               Welcome back, {profile.fullName}! 👋
             </h1>
-            <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
-              You have <span className="text-white font-bold">{highMatchJobs.length} jobs</span> matching your DevSecOps profile by &gt;70%, with <span className="text-emerald-400 font-bold">{interviewsCount} active interview rounds</span> in progress.
+            <p className="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed">
+              You have <span className="text-white font-bold">{highMatchJobs.length} jobs</span> matching your DevSecOps profile by &gt;70%, with <span className="text-emerald-400 font-bold">{interviewsCount} active interview rounds</span> in progress across LinkedIn and Naukri.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => onNavigateTab('matches')}
-              className="flex items-center gap-2 bg-white text-indigo-950 hover:bg-slate-100 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg transition-all"
+              className="flex items-center gap-2 bg-white text-indigo-950 hover:bg-slate-100 font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-lg transition-all"
             >
               <span>Explore 70%+ Matches</span>
               <ChevronRight className="w-4 h-4" />
@@ -96,10 +97,10 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
             <button
               onClick={onSyncAll}
               disabled={isSyncing}
-              className="flex items-center gap-2 bg-indigo-600/80 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-indigo-400/30 backdrop-blur-xs transition-all disabled:opacity-50"
+              className="flex items-center gap-2 bg-indigo-600/90 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl border border-indigo-400/30 backdrop-blur-xs transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-              <span>{isSyncing ? 'Syncing...' : 'Quick Sync Hub'}</span>
+              <span>{isSyncing ? 'Syncing...' : 'Sync All Platforms'}</span>
             </button>
           </div>
         </div>
@@ -109,18 +110,18 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
       </div>
 
       {/* Top 4 KPI Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div 
           onClick={() => onNavigateTab('matches')}
-          className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+          className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">High Match Feed</span>
-            <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-4 flex items-baseline gap-2">
             <span className="text-3xl font-black text-slate-900">{highMatchJobs.length}</span>
             <span className="text-xs font-semibold text-emerald-600">&ge; 70% match</span>
           </div>
@@ -129,29 +130,29 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
 
         <div 
           onClick={() => onNavigateTab('pipeline')}
-          className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+          className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Interview Pipeline</span>
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-4 flex items-baseline gap-2">
             <span className="text-3xl font-black text-amber-600">{interviewsCount}</span>
             <span className="text-xs font-semibold text-amber-700">active rounds</span>
           </div>
           <p className="text-[11px] text-slate-400 mt-1">Zomato (HR) &amp; Swiggy (Tech)</p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Pipeline Compensation</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
               <Banknote className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-4 flex items-baseline gap-2">
             <span className="text-2xl font-black text-slate-900">₹26.5 LPA</span>
             <span className="text-xs font-bold text-emerald-600">+89% hike</span>
           </div>
@@ -160,15 +161,15 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
 
         <div 
           onClick={() => onNavigateTab('profile')}
-          className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
+          className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500">Profile ATS Strength</span>
-            <div className="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
               <Award className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-4 flex items-baseline gap-2">
             <span className="text-3xl font-black text-violet-600">95%</span>
             <span className="text-xs font-semibold text-violet-700">Optimized</span>
           </div>
@@ -176,12 +177,19 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
         </div>
       </div>
 
+      {/* USER'S CORE REQUEST: Central Connector Diagram with all app branches! */}
+      <NetworkConnectorHub
+        profile={profile}
+        onSyncAll={onSyncAll}
+        isSyncing={isSyncing}
+      />
+
       {/* Main Grid: Application Funnel + Top Match & Skill Gap */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left 2 Cols: Funnel & Upcoming Agenda */}
         <div className="lg:col-span-2 space-y-6">
           {/* Conversion Funnel Card */}
-          <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-5">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
@@ -256,14 +264,14 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
           </div>
 
           {/* Upcoming Interview Schedule & Action Items */}
-          <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
             <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
               <Calendar className="w-4 h-4 text-indigo-600" />
               Active Interview Milestones &amp; Action Items
             </h3>
 
             <div className="space-y-3">
-              <div className="flex items-start justify-between p-3.5 rounded-xl border border-purple-200 bg-purple-50/50">
+              <div className="flex items-start justify-between p-4 rounded-2xl border border-purple-200 bg-purple-50/50">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">
@@ -284,7 +292,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
                 </button>
               </div>
 
-              <div className="flex items-start justify-between p-3.5 rounded-xl border border-amber-200 bg-amber-50/50">
+              <div className="flex items-start justify-between p-4 rounded-2xl border border-amber-200 bg-amber-50/50">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
@@ -312,7 +320,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
         <div className="space-y-6">
           {/* Top Recommended Job Card */}
           {topMatchJob && (
-            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-md space-y-4">
+            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-md space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-full text-indigo-200">
                   Top Profile Match
@@ -334,7 +342,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
                 <span className="text-xs font-bold text-amber-300">{topMatchJob.salary}</span>
                 <button
                   onClick={() => onOpenTailorForJob(topMatchJob)}
-                  className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm transition-all"
+                  className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-sm transition-all"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                   <span>AI Tailor Resume</span>
@@ -344,7 +352,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
           )}
 
           {/* Market Skill Gap Advisor (like Jobscan / Teal) */}
-          <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs space-y-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-indigo-600" />
@@ -359,7 +367,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
               {topMissingSkills.map(([skill, count]) => (
                 <div
                   key={skill}
-                  className="flex items-center justify-between p-3 rounded-xl border border-slate-200/80 bg-slate-50"
+                  className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200/80 bg-slate-50"
                 >
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-amber-500" />
@@ -374,14 +382,14 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
 
             <button
               onClick={() => onNavigateTab('profile')}
-              className="w-full text-center text-xs font-bold text-indigo-600 hover:text-indigo-800 py-2 rounded-lg bg-indigo-50/70 border border-indigo-200/60 transition-all"
+              className="w-full text-center text-xs font-bold text-indigo-600 hover:text-indigo-800 py-2.5 rounded-xl bg-indigo-50/70 border border-indigo-200/60 transition-all"
             >
               + Add Skills to Boost Matches
             </button>
           </div>
 
           {/* Sync Status Mini Card */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex items-center justify-between">
+          <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />

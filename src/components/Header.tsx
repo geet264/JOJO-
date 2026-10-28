@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1700px] w-full mx-auto px-4 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Brand */}
           <div 
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
           <nav className="flex items-center space-x-1 sm:space-x-1.5 bg-slate-100/90 p-1 rounded-xl border border-slate-200/60">
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
                 activeTab === 'dashboard'
                   ? 'bg-white text-indigo-600 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
@@ -72,7 +72,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('matches')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
                 activeTab === 'matches'
                   ? 'bg-white text-indigo-600 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('pipeline')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
                 activeTab === 'pipeline'
                   ? 'bg-white text-indigo-600 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
@@ -104,7 +104,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('profile')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
                 activeTab === 'profile'
                   ? 'bg-white text-indigo-600 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
@@ -117,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => setActiveTab('sync')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs sm:text-sm font-bold rounded-lg transition-all ${
                 activeTab === 'sync'
                   ? 'bg-white text-indigo-600 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-white/40'
@@ -133,7 +133,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onSyncAll}
               disabled={isSyncing}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs sm:text-sm font-semibold px-3.5 py-2 rounded-xl shadow-sm hover:shadow transition-all disabled:opacity-60"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all disabled:opacity-60"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
               <span className="hidden md:inline">{isSyncing ? 'Syncing...' : 'Sync All Platforms'}</span>

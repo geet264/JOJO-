@@ -59,68 +59,68 @@ export const ApplicationTrackerView: React.FC<ApplicationTrackerViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-16">
+    <div className="space-y-6 w-full pb-16">
       {/* Top Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-500">Active Applications</div>
-            <div className="text-2xl font-black text-slate-800 mt-1">{appliedCount}</div>
+            <div className="text-3xl font-black text-slate-800 mt-1">{appliedCount}</div>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
             <Clock className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-500">In Interview Pipeline</div>
-            <div className="text-2xl font-black text-amber-600 mt-1">{interviewingCount}</div>
+            <div className="text-3xl font-black text-amber-600 mt-1">{interviewingCount}</div>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
             <Kanban className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-500">Offers Extended</div>
-            <div className="text-2xl font-black text-emerald-600 mt-1">{offersCount}</div>
+            <div className="text-3xl font-black text-emerald-600 mt-1">{offersCount}</div>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
             <Award className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex items-center justify-between">
           <div>
             <div className="text-xs font-semibold text-slate-500">High Match Jobs (&gt;70%)</div>
-            <div className="text-2xl font-black text-indigo-600 mt-1">
+            <div className="text-3xl font-black text-indigo-600 mt-1">
               {jobs.filter((j) => j.matchScore >= 70).length}
             </div>
           </div>
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+          <div className="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
             <Sparkles className="w-5 h-5" />
           </div>
         </div>
       </div>
 
-      {/* Kanban Board Columns */}
+      {/* Kanban Board Columns (Spans wide screen cleanly) */}
       <div className="overflow-x-auto pb-4">
-        <div className="flex gap-4 min-w-[1250px]">
+        <div className="flex gap-5 min-w-[1300px]">
           {STAGES.map((col) => {
             const columnJobs = jobs.filter((j) => j.applicationStage === col.key);
             return (
               <div
                 key={col.key}
-                className="flex-1 bg-slate-100/80 rounded-3xl p-4 border border-slate-200/80 flex flex-col min-w-[280px]"
+                className="flex-1 bg-slate-100/80 rounded-3xl p-4 sm:p-5 border border-slate-200/80 flex flex-col min-w-[280px]"
               >
                 {/* Column Header */}
                 <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-200">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-slate-800">{col.title}</span>
+                    <span className="font-bold text-xs sm:text-sm text-slate-800">{col.title}</span>
                   </div>
-                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${col.badgeColor}`}>
+                  <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${col.badgeColor}`}>
                     {columnJobs.length}
                   </span>
                 </div>
