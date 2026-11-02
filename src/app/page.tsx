@@ -8,10 +8,11 @@ import { ApplicationTrackerView } from '@/components/ApplicationTrackerView';
 import { ProfileView } from '@/components/ProfileView';
 import { SyncManagerView } from '@/components/SyncManagerView';
 import { AITailorModal } from '@/components/AITailorModal';
-import { UserProfile, JobPost, SyncPlatformState, ApplicationStage } from '@/types';
+import { AuthModal } from '@/components/AuthModal';
+import { UserProfile, JobPost, SyncPlatformState, ApplicationStage, AuthUser } from '@/types';
 import { initialProfile, initialJobs, initialPlatforms } from '@/lib/initialData';
 import { enrichJobsWithMatchScores } from '@/lib/matchEngine';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Sparkles, UserPlus, LogIn } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'matches' | 'pipeline' | 'profile' | 'sync'>('dashboard');
@@ -34,6 +35,33 @@ export default function Home() {
   ]);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Authentication State
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>({
+    id: 'user_1',
+    fullName: 'Geeta Jogi',
+    email: 'geeta.jogi@altisec.com',
+    role: 'DevSecOps Engineer',
+    experienceLevel: '4 Years',
+    noticePeriod: '30 Days / Serving Notice',
+    currentCTC: '14 LPA',
+    expectedCTC: '22 - 25 LPA ($90k - $120k for Remote)',
+    preferredLocation: 'Worldwide Remote & India',
+    targetPlatforms: ['linkedin', 'naukri', 'indeed'],
+    skills: [
+      'DevSecOps',
+      'Docker & Kubernetes',
+      'AWS Cloud Security',
+      'CI/CD Pipelines (GitHub Actions / Jenkins)',
+      'Terraform (IaC)',
+      'SonarQube & SAST/DAST',
+      'Trivy / Container Scanning',
+      'Python / Bash Scripting',
+      'Linux Administration',
+    ],
+  });
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
 
   // AI Tailor Modal state
   const [selectedTailorJob, setSelectedTailorJob] = useState<JobPost | null>(null);
@@ -83,6 +111,43 @@ export default function Home() {
     } catch (err) {
       console.error('Error persisting data:', err);
     }
+  };
+
+  // Auth Handlers
+  const handleOpenAuth = (mode: 'login' | 'register') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+  };
+
+  const handleLoginSuccess = async (user: AuthUser) => {
+    setCurrentUser(user);
+
+    // Update profile data with user's choices
+    const updatedProfile: UserProfile = {
+      ...profile,
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      currentTitle: user.role || profile.currentTitle,
+      targetTitles: [user.role, `Senior ${user.role}`, `${user.role} Specialist`],
+      noticePeriod: user.noticePeriod || profile.noticePeriod,
+      currentCTC: user.currentCTC || profile.currentCTC,
+      expectedCTC: user.expectedCTC || profile.expectedCTC,
+      location: user.preferredLocation || profile.location,
+      skills: user.skills && user.skills.length > 0 
+        ? user.skills.map((s) => ({ name: s, level: 'Expert' as const, category: 'Core' }))
+        : profile.skills,
+      updatedAt: new Date().toISOString(),
+    };
+
+    setProfile(updatedProfile);
+    const enriched = enrichJobsWithMatchScores(updatedProfile, jobs);
+    setJobs(enriched);
+    await persistChanges(updatedProfile, enriched);
   };
 
   // Recalculate matches when profile changes
@@ -200,9 +265,45 @@ export default function Home() {
         lastSyncedAt={profile.lastSyncedAt}
         onSyncAll={handleSyncAll}
         isSyncing={isSyncing}
+        currentUser={currentUser}
+        onOpenAuth={handleOpenAuth}
+        onLogout={handleLogout}
       />
 
       <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 lg:px-12 pt-6 pb-12">
+        {/* Guest / Logged Out Welcome Banner */}
+        {!currentUser && (
+          <div className="mb-6 p-5 rounded-2xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-950 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg border border-indigo-800/60 animate-fade-in">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-300 shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm sm:text-base">You are viewing JOJO in Guest / Preview Mode</h3>
+                <p className="text-xs text-indigo-200">
+                  Log in or Create an Account to configure your career options, sync with LinkedIn &amp; Naukri, and unlock 80%+ match jobs.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
+              <button
+                onClick={() => handleOpenAuth('login')}
+                className="flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/15 transition-all"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Log In</span>
+              </button>
+              <button
+                onClick={() => handleOpenAuth('register')}
+                className="flex items-center gap-1.5 px-4 py-2 bg-white text-indigo-950 hover:bg-slate-100 font-bold text-xs rounded-xl shadow-md transition-all"
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Create Free Account</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'dashboard' && (
           <DashboardOverviewView
             profile={profile}
@@ -253,6 +354,14 @@ export default function Home() {
           />
         )}
       </main>
+
+      {/* Authentication Modal (Create Account / Login) */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        initialMode={authModalMode}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
 
       {/* AI Tailor Modal */}
       {selectedTailorJob && (

@@ -117,3 +117,19 @@ export interface ActivityReminder {
   type: 'Interview' | 'FollowUp' | 'Screening' | 'OfferDeadline';
   completed: boolean;
 }
+
+export interface AuthUser {
+  id: string;
+  fullName: string;
+  email: string;
+  password?: string;
+  role: string;
+  experienceLevel: string;
+  noticePeriod: string;
+  currentCTC: string;
+  expectedCTC: string;
+  preferredLocation: string;
+  targetPlatforms: string[];
+  skills: string[];
+}
+

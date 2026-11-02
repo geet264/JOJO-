@@ -1,14 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   LayoutDashboard, 
   Sparkles, 
   Kanban, 
   UserCheck, 
   RefreshCw,
-  Bell
+  LogOut,
+  LogIn,
+  UserPlus,
+  ChevronDown,
+  User as UserIcon,
+  ShieldCheck
 } from 'lucide-react';
+import { AuthUser } from '@/types';
 
 interface HeaderProps {
   activeTab: 'dashboard' | 'matches' | 'pipeline' | 'profile' | 'sync';
@@ -18,6 +24,9 @@ interface HeaderProps {
   lastSyncedAt?: string;
   onSyncAll: () => void;
   isSyncing: boolean;
+  currentUser: AuthUser | null;
+  onOpenAuth: (mode: 'login' | 'register') => void;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,7 +37,33 @@ export const Header: React.FC<HeaderProps> = ({
   lastSyncedAt,
   onSyncAll,
   isSyncing,
+  currentUser,
+  onOpenAuth,
+  onLogout,
 }) => {
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setUserDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
       <div className="max-w-[1700px] w-full mx-auto px-4 sm:px-8 lg:px-12">
@@ -128,17 +163,112 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </nav>
 
-          {/* Top Quick Actions */}
+          {/* Top Quick Actions + Auth State */}
           <div className="flex items-center gap-2.5">
+            {/* Sync All button */}
             <button
               onClick={onSyncAll}
               disabled={isSyncing}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all disabled:opacity-60"
+              className="hidden lg:flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all disabled:opacity-60"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-              <span className="hidden md:inline">{isSyncing ? 'Syncing...' : 'Sync All Platforms'}</span>
-              <span className="md:hidden">Sync</span>
+              <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>{isSyncing ? 'Syncing...' : 'Sync All'}</span>
             </button>
+
+            {/* AUTH STATE: Logged In vs Logged Out */}
+            {currentUser ? (
+              /* User Menu Dropdown */
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-left"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                    {getInitials(currentUser.fullName)}
+                  </div>
+                  <div className="hidden sm:block leading-tight">
+                    <p className="text-xs font-bold text-slate-800 truncate max-w-[110px]">
+                      {currentUser.fullName}
+                    </p>
+                    <p className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      Active
+                    </p>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-200/90 py-2 z-50 animate-fade-in">
+                    {/* User header */}
+                    <div className="px-4 py-3 border-b border-slate-100">
+                      <p className="text-xs font-bold text-slate-900">{currentUser.fullName}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{currentUser.email}</p>
+                      <span className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-bold">
+                        {currentUser.role}
+                      </span>
+                    </div>
+
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          setActiveTab('profile');
+                          setUserDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
+                      >
+                        <UserIcon className="w-3.5 h-3.5 text-slate-400" />
+                        My Profile &amp; CTC Settings
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          onOpenAuth('register');
+                          setUserDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition-colors"
+                      >
+                        <UserPlus className="w-3.5 h-3.5 text-indigo-500" />
+                        Create Another Account
+                      </button>
+                    </div>
+
+                    <div className="pt-1 border-t border-slate-100">
+                      <button
+                        onClick={() => {
+                          onLogout();
+                          setUserDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2.5 transition-colors"
+                      >
+                        <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                        Log Out of JOJO
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Logged Out: Sign In & Create Account Buttons */
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <button
+                  onClick={() => onOpenAuth('login')}
+                  className="flex items-center gap-1 px-3 py-2 text-xs font-bold text-slate-700 hover:text-indigo-600 hover:bg-slate-100 rounded-xl transition-all"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Log In</span>
+                </button>
+
+                <button
+                  onClick={() => onOpenAuth('register')}
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-bold px-3.5 sm:px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Create Account</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
