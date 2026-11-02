@@ -101,12 +101,21 @@ export interface JobPost {
 }
 
 export interface SyncPlatformState {
-  id: 'linkedin' | 'naukri' | 'indeed';
+  id: 'linkedin' | 'naukri' | 'indeed' | 'instahyre' | 'glassdoor' | 'foundit' | 'wellfound' | 'greenhouse' | string;
   name: string;
   logo: string;
   status: 'Connected' | 'Pending' | 'Needs Update';
   lastSyncedAt?: string;
   accountEmail?: string;
+}
+
+export interface UserAccountData {
+  userId: string;
+  userEmail: string;
+  profile: UserProfile;
+  jobs: JobPost[];
+  platforms: SyncPlatformState[];
+  syncLogs: Array<{ id: string; timestamp: string; platform: string; message: string }>;
 }
 
 export interface ActivityReminder {

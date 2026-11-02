@@ -10,7 +10,8 @@ import {
   Copy, 
   ExternalLink,
   Laptop,
-  Check
+  Check,
+  UserCheck
 } from 'lucide-react';
 import { NetworkConnectorHub } from './NetworkConnectorHub';
 
@@ -18,6 +19,7 @@ interface SyncManagerViewProps {
   platforms: SyncPlatformState[];
   profile: UserProfile;
   syncLogs: Array<{ id: string; timestamp: string; platform: string; message: string }>;
+  onTogglePlatform?: (platformId: string) => void;
   onSyncAll: () => void;
   isSyncing: boolean;
 }
@@ -26,6 +28,7 @@ export const SyncManagerView: React.FC<SyncManagerViewProps> = ({
   platforms,
   profile,
   syncLogs,
+  onTogglePlatform,
   onSyncAll,
   isSyncing,
 }) => {
@@ -33,12 +36,19 @@ export const SyncManagerView: React.FC<SyncManagerViewProps> = ({
 
   const handleCopyPayload = () => {
     const payload = {
-      profileSnapshot: {
+      tenantAccount: {
+        userId: profile.id,
+        email: profile.email,
         fullName: profile.fullName,
+      },
+      profileSnapshot: {
         currentTitle: profile.currentTitle,
         targetTitles: profile.targetTitles,
         summary: profile.summary,
         totalExperience: profile.yearsOfExperience,
+        noticePeriod: profile.noticePeriod,
+        currentCTC: profile.currentCTC,
+        expectedCTC: profile.expectedCTC,
         skills: profile.skills.map((s) => s.name),
         experiences: profile.experiences,
       },
@@ -56,6 +66,8 @@ export const SyncManagerView: React.FC<SyncManagerViewProps> = ({
       {/* Visual Central Connector Hub */}
       <NetworkConnectorHub
         profile={profile}
+        platforms={platforms}
+        onTogglePlatformStatus={onTogglePlatform}
         onSyncAll={onSyncAll}
         isSyncing={isSyncing}
       />
@@ -68,15 +80,15 @@ export const SyncManagerView: React.FC<SyncManagerViewProps> = ({
               <Laptop className="w-4 h-4" />
               Direct Browser &amp; Extension Sync Engine
             </div>
-            <h2 className="text-xl font-bold">Auto-Fill &amp; Universal Sync Payload</h2>
+            <h2 className="text-xl font-bold">Auto-Fill &amp; Isolated Sync Payload</h2>
             <p className="text-xs text-slate-300 max-w-2xl">
-              Because job portals like Naukri, LinkedIn, and Instahyre require authenticated sessions, JOJO synchronizes profiles via our background handler and companion extension payload.
+              This data payload belongs strictly to account <span className="text-white font-mono font-bold">{profile.email}</span>. When syncing with LinkedIn or Naukri, the extension injects these exact credentials and tailored bullets.
             </p>
           </div>
 
           <button
             onClick={handleCopyPayload}
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-5 py-3 rounded-xl border border-white/20 transition-all shadow-sm"
+            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-5 py-3 rounded-xl border border-white/20 transition-all shadow-sm shrink-0"
           >
             {copiedPayload ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             <span>{copiedPayload ? 'Copied Payload!' : 'Copy Sync JSON Payload'}</span>
@@ -86,11 +98,15 @@ export const SyncManagerView: React.FC<SyncManagerViewProps> = ({
         <div className="bg-black/40 rounded-2xl p-5 font-mono text-xs text-indigo-200 border border-white/10 overflow-x-auto max-h-56">
           <pre>
 {`{
-  "profile": "${profile.fullName}",
+  "accountUser": "${profile.fullName}",
+  "accountEmail": "${profile.email}",
+  "tenantId": "${profile.id}",
   "currentRole": "${profile.currentTitle}",
+  "noticePeriod": "${profile.noticePeriod}",
+  "expectedCTC": "${profile.expectedCTC}",
   "totalSkills": ${profile.skills.length},
   "targets": ["Naukri.com", "LinkedIn Profile", "Indeed India", "Instahyre", "Foundit", "Glassdoor"],
-  "status": "Ready for automated synchronization",
+  "channelStatus": "Dedicated Isolated Session Active",
   "syncedAt": "${profile.updatedAt}"
 }`}
           </pre>
@@ -99,7 +115,14 @@ export const SyncManagerView: React.FC<SyncManagerViewProps> = ({
 
       {/* Audit Log */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-        <h2 className="text-base font-bold text-slate-800">Recent Synchronization History</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-slate-800">
+            Recent Synchronization History for {profile.fullName}
+          </h2>
+          <span className="text-xs font-mono text-slate-400">
+            {profile.email}
+          </span>
+        </div>
         <div className="divide-y divide-slate-100">
           {syncLogs.map((log) => (
             <div key={log.id} className="py-3.5 flex items-center justify-between text-xs">

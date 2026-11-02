@@ -23,7 +23,7 @@ export default function Home() {
     {
       id: 'log_1',
       timestamp: 'Today, 2:30 PM',
-      platform: 'Naukri',
+      platform: 'Naukri.com',
       message: 'DevSecOps skills and notice period updated',
     },
     {
@@ -66,42 +66,47 @@ export default function Home() {
   // AI Tailor Modal state
   const [selectedTailorJob, setSelectedTailorJob] = useState<JobPost | null>(null);
 
+  // Dedicated multi-account data loader
+  const loadUserData = async (userId: string) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/data?userId=${userId}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.profile) {
+          setProfile(json.profile);
+          const enriched = enrichJobsWithMatchScores(json.profile, json.jobs || initialJobs);
+          setJobs(enriched);
+        }
+        if (json.platforms) setPlatforms(json.platforms);
+        if (json.syncLogs) setSyncLogs(json.syncLogs);
+      }
+    } catch (err) {
+      console.error('Failed to load user account data:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Fetch persisted data from disk on mount & restore user session
   useEffect(() => {
+    let targetUserId = 'user_1';
     if (typeof window !== 'undefined') {
       const savedUser = localStorage.getItem('jojo_active_user');
       if (savedUser) {
         try {
-          setCurrentUser(JSON.parse(savedUser));
+          const parsed = JSON.parse(savedUser);
+          setCurrentUser(parsed);
+          if (parsed.id) targetUserId = parsed.id;
         } catch {
           // keep initial
         }
       }
     }
-
-    async function loadData() {
-      try {
-        const res = await fetch('/api/data');
-        if (res.ok) {
-          const json = await res.json();
-          if (json.profile) {
-            setProfile(json.profile);
-            const enriched = enrichJobsWithMatchScores(json.profile, json.jobs || initialJobs);
-            setJobs(enriched);
-          }
-          if (json.platforms) setPlatforms(json.platforms);
-          if (json.syncLogs) setSyncLogs(json.syncLogs);
-        }
-      } catch (err) {
-        console.error('Failed to load local database:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadData();
+    loadUserData(targetUserId);
   }, []);
 
-  // Save changes to backend disk database
+  // Save changes to backend disk database for THIS active user only
   const persistChanges = async (
     updatedProfile: UserProfile,
     updatedJobs: JobPost[],
@@ -109,10 +114,12 @@ export default function Home() {
     updatedLogs?: any[]
   ) => {
     try {
+      const targetUserId = currentUser?.id || updatedProfile.id || 'user_1';
       await fetch('/api/data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId: targetUserId,
           profile: updatedProfile,
           jobs: updatedJobs,
           platforms: updatedPlatforms || platforms,
@@ -120,7 +127,7 @@ export default function Home() {
         }),
       });
     } catch (err) {
-      console.error('Error persisting data:', err);
+      console.error('Error persisting account data:', err);
     }
   };
 
@@ -142,29 +149,7 @@ export default function Home() {
     if (typeof window !== 'undefined') {
       localStorage.setItem('jojo_active_user', JSON.stringify(user));
     }
-
-    // Update profile data with user's choices
-    const updatedProfile: UserProfile = {
-      ...profile,
-      id: user.id,
-      fullName: user.fullName,
-      email: user.email,
-      currentTitle: user.role || profile.currentTitle,
-      targetTitles: [user.role, `Senior ${user.role}`, `${user.role} Specialist`],
-      noticePeriod: user.noticePeriod || profile.noticePeriod,
-      currentCTC: user.currentCTC || profile.currentCTC,
-      expectedCTC: user.expectedCTC || profile.expectedCTC,
-      location: user.preferredLocation || profile.location,
-      skills: user.skills && user.skills.length > 0 
-        ? user.skills.map((s) => ({ name: s, level: 'Expert' as const, category: 'Core' }))
-        : profile.skills,
-      updatedAt: new Date().toISOString(),
-    };
-
-    setProfile(updatedProfile);
-    const enriched = enrichJobsWithMatchScores(updatedProfile, jobs);
-    setJobs(enriched);
-    await persistChanges(updatedProfile, enriched);
+    await loadUserData(user.id);
   };
 
   // Recalculate matches when profile changes
@@ -219,7 +204,42 @@ export default function Home() {
     await persistChanges(profile, updated);
   };
 
-  // Trigger sync to all platforms
+  // Toggle individual platform connection for this account
+  const handleTogglePlatform = async (platformId: string) => {
+    const existing = platforms.find((p) => p.id === platformId);
+    let updatedPlatforms: SyncPlatformState[];
+
+    if (existing) {
+      const nextStatus = existing.status === 'Connected' ? ('Pending' as const) : ('Connected' as const);
+      updatedPlatforms = platforms.map((p) =>
+        p.id === platformId
+          ? {
+              ...p,
+              status: nextStatus,
+              lastSyncedAt: nextStatus === 'Connected' ? 'Connected just now' : 'Disconnected',
+              accountEmail: currentUser?.email || profile.email,
+            }
+          : p
+      );
+    } else {
+      updatedPlatforms = [
+        ...platforms,
+        {
+          id: platformId,
+          name: platformId.toUpperCase(),
+          logo: '🌐',
+          status: 'Connected',
+          lastSyncedAt: 'Connected just now',
+          accountEmail: currentUser?.email || profile.email,
+        },
+      ];
+    }
+
+    setPlatforms(updatedPlatforms);
+    await persistChanges(profile, jobs, updatedPlatforms);
+  };
+
+  // Trigger sync to all platforms for this account
   const handleSyncAll = async () => {
     setIsSyncing(true);
     await new Promise((resolve) => setTimeout(resolve, 1800));
@@ -230,13 +250,13 @@ export default function Home() {
         id: `log_${Date.now()}_1`,
         timestamp: `Today, ${nowStr}`,
         platform: 'Naukri.com',
-        message: `Synced ${profile.skills.length} skills & updated experience`,
+        message: `Synced ${profile.skills.length} skills & updated experience for ${profile.email}`,
       },
       {
         id: `log_${Date.now()}_2`,
         timestamp: `Today, ${nowStr}`,
         platform: 'LinkedIn',
-        message: 'Headline & profile summary synchronized',
+        message: `Headline & profile summary synchronized for ${profile.email}`,
       },
       ...syncLogs,
     ];
@@ -245,6 +265,7 @@ export default function Home() {
       ...p,
       status: 'Connected' as const,
       lastSyncedAt: 'Just now',
+      accountEmail: currentUser?.email || profile.email,
     }));
 
     const updatedProfile = {
@@ -267,7 +288,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center space-y-3">
         <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-        <span className="text-sm font-semibold text-slate-600">Loading JOJO Hub...</span>
+        <span className="text-sm font-semibold text-slate-600">Loading JOJO Account Data...</span>
       </div>
     );
   }
@@ -366,6 +387,7 @@ export default function Home() {
             platforms={platforms}
             profile={profile}
             syncLogs={syncLogs}
+            onTogglePlatform={handleTogglePlatform}
             onSyncAll={handleSyncAll}
             isSyncing={isSyncing}
           />

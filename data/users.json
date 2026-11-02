@@ -51,5 +51,55 @@
     ],
     "id": "usr_1793626587257",
     "createdAt": "2026-11-02T13:36:27.257Z"
+  },
+  {
+    "fullName": "Test",
+    "email": "test@gamil.com",
+    "password": "123456",
+    "role": "DevSecOps Engineer",
+    "experienceLevel": "3-5 Years (Mid-Senior)",
+    "noticePeriod": "30 Days",
+    "currentCTC": "14 LPA",
+    "expectedCTC": "24 LPA",
+    "preferredLocation": "Worldwide Remote",
+    "targetPlatforms": [
+      "linkedin",
+      "naukri",
+      "indeed",
+      "instahyre"
+    ],
+    "skills": [
+      "DevSecOps",
+      "Docker & Kubernetes",
+      "AWS Cloud Security",
+      "CI/CD Pipelines (GitHub Actions / Jenkins)",
+      "Terraform (IaC)"
+    ],
+    "id": "usr_1793626808512",
+    "createdAt": "2026-11-02T13:40:08.512Z"
+  },
+  {
+    "fullName": "Priya Sharma",
+    "email": "priya.sharma@example.com",
+    "password": "password789",
+    "role": "QA Automation Lead",
+    "experienceLevel": "5-8 Years (Senior)",
+    "noticePeriod": "Immediate / Serving Notice",
+    "currentCTC": "16 LPA",
+    "expectedCTC": "28 LPA",
+    "preferredLocation": "Worldwide Remote",
+    "targetPlatforms": [
+      "linkedin",
+      "naukri",
+      "wellfound"
+    ],
+    "skills": [
+      "QA Automation",
+      "Cypress",
+      "Python / Bash Scripting",
+      "CI/CD Pipelines (GitHub Actions / Jenkins)"
+    ],
+    "id": "usr_1793627281591",
+    "createdAt": "2026-11-02T13:48:01.592Z"
   }
 ]

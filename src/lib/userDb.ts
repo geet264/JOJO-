@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { AuthUser } from '@/types';
+import { AuthUser, UserAccountData, UserProfile, SyncPlatformState } from '@/types';
+import { initialProfile, initialJobs } from '@/lib/initialData';
+import { enrichJobsWithMatchScores } from '@/lib/matchEngine';
 
 const dataDir = path.join(process.cwd(), 'data');
 const usersFilePath = path.join(dataDir, 'users.json');
@@ -120,4 +122,114 @@ export function authenticateUser(email: string, passwordAttempt: string): { succ
   // Password matches - return safe user without password
   const { password, ...safeUser } = user;
   return { success: true, user: safeUser };
+}
+
+export function findUserById(id: string): StoredUser | undefined {
+  const users = ensureUsersDb();
+  return users.find((u) => u.id === id);
+}
+
+export function generateDefaultAccountData(user: AuthUser): UserAccountData {
+  const isGeeta = user.email.toLowerCase().includes('geeta.jogi');
+
+  const profile: UserProfile = {
+    ...initialProfile,
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    currentTitle: user.role || 'Senior Software Engineer',
+    targetTitles: [user.role, `Senior ${user.role}`, `${user.role} Specialist`],
+    summary: `${user.role} with expertise in modern infrastructure, pipelines, and cloud automation. Seeking high-impact positions.`,
+    yearsOfExperience: user.experienceLevel?.includes('8+') ? 8 : user.experienceLevel?.includes('5-8') ? 6 : 4,
+    currentCTC: user.currentCTC || '14 LPA',
+    expectedCTC: user.expectedCTC || '24 LPA',
+    noticePeriod: user.noticePeriod || '30 Days',
+    location: user.preferredLocation || 'Worldwide Remote & India',
+    skills: user.skills && user.skills.length > 0
+      ? user.skills.map((s) => ({ name: s, level: 'Expert' as const, category: 'Core Stack' }))
+      : initialProfile.skills,
+    links: {
+      linkedin: `https://linkedin.com/in/${user.fullName.toLowerCase().replace(/\s+/g, '-')}`,
+      naukri: `https://naukri.com/profile/${user.fullName.toLowerCase().replace(/\s+/g, '-')}`,
+    },
+    lastSyncedAt: isGeeta ? '10 minutes ago' : 'Ready to sync',
+    updatedAt: new Date().toISOString(),
+  };
+
+  const platforms: SyncPlatformState[] = [
+    {
+      id: 'linkedin',
+      name: 'LinkedIn',
+      logo: '💼',
+      status: 'Connected',
+      lastSyncedAt: isGeeta ? '10 minutes ago' : 'Connected for ' + user.email,
+      accountEmail: user.email,
+    },
+    {
+      id: 'naukri',
+      name: 'Naukri.com',
+      logo: '🚀',
+      status: user.targetPlatforms?.includes('naukri') || isGeeta ? 'Connected' : 'Pending',
+      lastSyncedAt: isGeeta ? '1 hour ago' : 'Pending initial sync',
+      accountEmail: user.email,
+    },
+    {
+      id: 'indeed',
+      name: 'Indeed India',
+      logo: '🌐',
+      status: user.targetPlatforms?.includes('indeed') || isGeeta ? 'Connected' : 'Pending',
+      lastSyncedAt: isGeeta ? 'Yesterday' : 'Pending initial sync',
+      accountEmail: user.email,
+    },
+    {
+      id: 'instahyre',
+      name: 'Instahyre',
+      logo: '⚡',
+      status: user.targetPlatforms?.includes('instahyre') || isGeeta ? 'Connected' : 'Pending',
+      lastSyncedAt: isGeeta ? '2 days ago' : 'Pending initial sync',
+      accountEmail: user.email,
+    },
+    {
+      id: 'glassdoor',
+      name: 'Glassdoor',
+      logo: '🏢',
+      status: 'Pending',
+      lastSyncedAt: 'Not connected',
+      accountEmail: user.email,
+    },
+    {
+      id: 'wellfound',
+      name: 'Wellfound',
+      logo: '✌️',
+      status: 'Pending',
+      lastSyncedAt: 'Not connected',
+      accountEmail: user.email,
+    },
+  ];
+
+  const jobs = enrichJobsWithMatchScores(profile, initialJobs);
+
+  const syncLogs = [
+    {
+      id: `log_init_${Date.now()}_1`,
+      timestamp: 'Today, Just now',
+      platform: 'JOJO Core Hub',
+      message: `Account created for ${user.fullName} (${user.email}) with isolated platform channels.`,
+    },
+    {
+      id: `log_init_${Date.now()}_2`,
+      timestamp: 'Today, Just now',
+      platform: 'LinkedIn',
+      message: `Channel configured for ${user.email} (Ready for automated auto-fill sync)`,
+    },
+  ];
+
+  return {
+    userId: user.id,
+    userEmail: user.email,
+    profile,
+    jobs,
+    platforms,
+    syncLogs,
+  };
 }

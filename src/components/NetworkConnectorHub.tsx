@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { UserProfile } from '@/types';
+import { UserProfile, SyncPlatformState } from '@/types';
 import { 
   Sparkles, 
   RefreshCw, 
@@ -16,11 +16,15 @@ import {
   Laptop,
   HelpCircle,
   X,
-  Copy
+  Copy,
+  Lock,
+  UserCheck
 } from 'lucide-react';
 
 interface NetworkConnectorHubProps {
   profile: UserProfile;
+  platforms?: SyncPlatformState[];
+  onTogglePlatformStatus?: (platformId: string) => void;
   onSyncAll: () => void;
   isSyncing: boolean;
 }
@@ -148,6 +152,8 @@ const PLATFORMS: PlatformNode[] = [
 
 export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
   profile,
+  platforms,
+  onTogglePlatformStatus,
   onSyncAll,
   isSyncing,
 }) => {
@@ -188,7 +194,16 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             Universal Platform Connector
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 max-w-2xl mt-0.5">
+          <div className="flex flex-wrap items-center gap-2 mt-1.5">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 text-white text-[11px] font-bold shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span>Isolated Account: {profile.fullName} ({profile.email})</span>
+            </span>
+            <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200/60">
+              Private Platform Credentials
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 max-w-2xl mt-1.5">
             Click on any platform branch (LinkedIn, Naukri, etc.) to view its connection bridge or launch synchronization.
           </p>
         </div>
@@ -223,7 +238,10 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
           
           {/* Left Satellite Platforms (4 apps) */}
           <div className="lg:col-span-4 space-y-4">
-            {leftBranches.map((app) => (
+            {leftBranches.map((app) => {
+              const platformState = platforms?.find((p) => p.id === app.id);
+              const isConnected = platformState ? platformState.status === 'Connected' : true;
+              return (
               <div
                 key={app.id}
                 onClick={() => setSelectedPlatform(app)}
@@ -253,14 +271,18 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
                   <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                     isSyncing
                       ? 'bg-indigo-50 text-indigo-700 border-indigo-200 animate-pulse'
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : isConnected
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200'
                   }`}>
                     {isSyncing ? (
                       <RefreshCw className="w-2.5 h-2.5 animate-spin" />
-                    ) : (
+                    ) : isConnected ? (
                       <Check className="w-2.5 h-2.5 text-emerald-600" />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                     )}
-                    <span>{isSyncing ? 'Syncing...' : 'Connected'}</span>
+                    <span>{isSyncing ? 'Syncing...' : isConnected ? 'Connected' : 'Not Connected'}</span>
                   </span>
                 </div>
 
@@ -272,7 +294,8 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
                   ))}
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
 
           {/* Center: The Core JOJO Hub Node */}
@@ -334,7 +357,10 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
 
           {/* Right Satellite Platforms (4 apps) */}
           <div className="lg:col-span-4 space-y-4">
-            {rightBranches.map((app) => (
+            {rightBranches.map((app) => {
+              const platformState = platforms?.find((p) => p.id === app.id);
+              const isConnected = platformState ? platformState.status === 'Connected' : true;
+              return (
               <div
                 key={app.id}
                 onClick={() => setSelectedPlatform(app)}
@@ -364,14 +390,18 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
                   <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                     isSyncing
                       ? 'bg-indigo-50 text-indigo-700 border-indigo-200 animate-pulse'
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : isConnected
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200'
                   }`}>
                     {isSyncing ? (
                       <RefreshCw className="w-2.5 h-2.5 animate-spin" />
-                    ) : (
+                    ) : isConnected ? (
                       <Check className="w-2.5 h-2.5 text-emerald-600" />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                     )}
-                    <span>{isSyncing ? 'Syncing...' : 'Connected'}</span>
+                    <span>{isSyncing ? 'Syncing...' : isConnected ? 'Connected' : 'Not Connected'}</span>
                   </span>
                 </div>
 
@@ -383,7 +413,8 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
                   ))}
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
 
         </div>
@@ -415,9 +446,26 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
               </button>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2 text-xs">
-              <span className="font-bold text-slate-700 block">How JOJO connects:</span>
-              <p className="text-slate-600 leading-relaxed">
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                <span className="font-bold text-slate-700">Account Credentials:</span>
+                <span className="font-mono text-[11px] text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">
+                  {platforms?.find((p) => p.id === selectedPlatform.id)?.accountEmail || profile.email}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-700">Current Channel Status:</span>
+                <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                  platforms?.find((p) => p.id === selectedPlatform.id)?.status === 'Connected'
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'bg-amber-100 text-amber-800'
+                }`}>
+                  {platforms?.find((p) => p.id === selectedPlatform.id)?.status === 'Connected'
+                    ? 'Active & Connected ✓'
+                    : 'Disconnected'}
+                </span>
+              </div>
+              <p className="text-slate-600 leading-relaxed pt-1">
                 {selectedPlatform.howToConnect}
               </p>
             </div>
@@ -436,14 +484,31 @@ export const NetworkConnectorHub: React.FC<NetworkConnectorHubProps> = ({
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-3">
-              <button
-                onClick={handleCopyProfilePayload}
-                className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 transition-all"
-              >
-                {copiedPayload ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedPayload ? 'Copied Profile Data!' : 'Copy Sync Payload'}</span>
-              </button>
+            <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyProfilePayload}
+                  className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:bg-slate-100 px-3.5 py-2.5 rounded-xl border border-slate-200 transition-all"
+                >
+                  {copiedPayload ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedPayload ? 'Copied Profile Data!' : 'Copy Sync Payload'}</span>
+                </button>
+
+                {onTogglePlatformStatus && (
+                  <button
+                    onClick={() => onTogglePlatformStatus(selectedPlatform.id)}
+                    className={`text-xs font-bold px-3.5 py-2.5 rounded-xl border transition-all ${
+                      platforms?.find((p) => p.id === selectedPlatform.id)?.status === 'Connected'
+                        ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                        : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                    }`}
+                  >
+                    {platforms?.find((p) => p.id === selectedPlatform.id)?.status === 'Connected'
+                      ? 'Disconnect Channel'
+                      : 'Connect Channel'}
+                  </button>
+                )}
+              </div>
 
               <a
                 href={selectedPlatform.url}
