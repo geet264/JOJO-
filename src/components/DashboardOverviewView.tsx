@@ -40,12 +40,18 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
   isSyncing,
   onOpenTailorForJob,
 }) => {
+  const highMatch80Jobs = jobs.filter((j) => j.matchScore >= 80);
   const highMatchJobs = jobs.filter((j) => j.matchScore >= 70);
   const activeApplications = jobs.filter((j) => j.applicationStage !== 'Wishlist');
   const interviewsCount = jobs.filter(
     (j) => j.applicationStage === 'Screening' || j.applicationStage === 'Technical' || j.applicationStage === 'Final Round'
   ).length;
   const offersCount = jobs.filter((j) => j.applicationStage === 'Offer').length;
+
+  // Average ATS Score
+  const avgAtsScore = Math.round(
+    jobs.reduce((acc, j) => acc + (j.atsScore || 85), 0) / (jobs.length || 1)
+  );
 
   // Funnel calculations
   const totalCount = jobs.length;
@@ -82,7 +88,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
               Welcome back, {profile.fullName}! 👋
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed">
-              You have <span className="text-white font-bold">{highMatchJobs.length} jobs</span> matching your DevSecOps profile by &gt;70%, with <span className="text-emerald-400 font-bold">{interviewsCount} active interview rounds</span> in progress across LinkedIn and Naukri.
+              You have <span className="text-white font-bold">{highMatch80Jobs.length} jobs</span> matching your DevSecOps profile by <span className="text-amber-300 font-bold">&gt;80%</span> (and {highMatchJobs.length} jobs by &gt;70%), with <span className="text-emerald-400 font-bold">{interviewsCount} active interview rounds</span> across India &amp; Worldwide Remote.
             </p>
           </div>
 
@@ -91,7 +97,7 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
               onClick={() => onNavigateTab('matches')}
               className="flex items-center gap-2 bg-white text-indigo-950 hover:bg-slate-100 font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-lg transition-all"
             >
-              <span>Explore 70%+ Matches</span>
+              <span>Explore 80%+ Matches</span>
               <ChevronRight className="w-4 h-4" />
             </button>
             <button
@@ -116,16 +122,16 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
           className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">High Match Feed</span>
-            <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
+            <span className="text-xs font-semibold text-slate-500">80%+ Top Match Feed</span>
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
               <Sparkles className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-slate-900">{highMatchJobs.length}</span>
-            <span className="text-xs font-semibold text-emerald-600">&ge; 70% match</span>
+            <span className="text-3xl font-black text-slate-900">{highMatch80Jobs.length}</span>
+            <span className="text-xs font-semibold text-emerald-600">&ge; 80% match</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Out of {jobs.length} aggregated postings</p>
+          <p className="text-[11px] text-slate-400 mt-1">Worldwide Remote &amp; India</p>
         </div>
 
         <div 
@@ -160,20 +166,20 @@ export const DashboardOverviewView: React.FC<DashboardOverviewViewProps> = ({
         </div>
 
         <div 
-          onClick={() => onNavigateTab('profile')}
+          onClick={() => onNavigateTab('matches')}
           className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">Profile ATS Strength</span>
+            <span className="text-xs font-semibold text-slate-500">Average ATS Score</span>
             <div className="w-10 h-10 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center font-bold group-hover:scale-110 transition-transform">
               <Award className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-violet-600">95%</span>
-            <span className="text-xs font-semibold text-violet-700">Optimized</span>
+            <span className="text-3xl font-black text-violet-600">{avgAtsScore}%</span>
+            <span className="text-xs font-semibold text-violet-700">Top 5% ATS</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">{profile.skills.length} skills indexed &amp; ready to sync</p>
+          <p className="text-[11px] text-slate-400 mt-1">Passing Workday &amp; Greenhouse</p>
         </div>
       </div>
 

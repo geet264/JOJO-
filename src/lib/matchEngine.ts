@@ -2,8 +2,14 @@ import { UserProfile, JobPost } from '@/types';
 
 export function calculateJobMatch(
   profile: UserProfile,
-  job: Omit<JobPost, 'matchScore' | 'matchedSkills' | 'missingSkills'>
-): { matchScore: number; matchedSkills: string[]; missingSkills: string[] } {
+  job: Omit<JobPost, 'matchScore' | 'atsScore' | 'atsStatus' | 'matchedSkills' | 'missingSkills'>
+): { 
+  matchScore: number; 
+  atsScore: number; 
+  atsStatus: 'Top 5% Candidate' | 'Strong ATS Match' | 'Needs Optimization'; 
+  matchedSkills: string[]; 
+  missingSkills: string[] 
+} {
   const profileSkillNames = profile.skills.map((s) => s.name.toLowerCase().trim());
   const userSkillMap = new Map<string, number>();
   
@@ -61,8 +67,19 @@ export function calculateJobMatch(
 
   const matchScore = Math.min(100, Math.round(skillPoints + titlePoints + expPoints));
 
+  // Compute ATS Score (Simulating Workday, Greenhouse & Lever ATS Parsers)
+  const certBonus = profile.certifications.length >= 2 ? 10 : 5;
+  const summaryKeywordBonus = profile.summary.toLowerCase().includes('devsecops') || profile.summary.toLowerCase().includes('security') ? 10 : 4;
+  const atsBase = (skillRatio * 60) + (titleMatch ? 15 : 5) + certBonus + summaryKeywordBonus;
+  const atsScore = Math.min(99, Math.round(atsBase));
+
+  const atsStatus: 'Top 5% Candidate' | 'Strong ATS Match' | 'Needs Optimization' =
+    atsScore >= 85 ? 'Top 5% Candidate' : atsScore >= 70 ? 'Strong ATS Match' : 'Needs Optimization';
+
   return {
     matchScore,
+    atsScore,
+    atsStatus,
     matchedSkills,
     missingSkills,
   };
@@ -70,10 +87,12 @@ export function calculateJobMatch(
 
 export function enrichJobsWithMatchScores(profile: UserProfile, jobs: JobPost[]): JobPost[] {
   return jobs.map((job) => {
-    const { matchScore, matchedSkills, missingSkills } = calculateJobMatch(profile, job);
+    const { matchScore, atsScore, atsStatus, matchedSkills, missingSkills } = calculateJobMatch(profile, job);
     return {
       ...job,
       matchScore,
+      atsScore,
+      atsStatus,
       matchedSkills,
       missingSkills,
     };

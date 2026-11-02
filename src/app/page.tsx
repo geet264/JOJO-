@@ -178,7 +178,7 @@ export default function Home() {
     await persistChanges(updatedProfile, jobs, updatedPlatforms, newLogs);
   };
 
-  const highMatchJobsCount = jobs.filter((j) => j.matchScore >= 70).length;
+  const highMatchJobsCount = jobs.filter((j) => j.matchScore >= 80).length;
   const totalApplications = jobs.filter((j) => j.applicationStage !== 'Wishlist').length;
 
   if (isLoading) {

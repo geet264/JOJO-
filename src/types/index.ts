@@ -68,12 +68,15 @@ export type ApplicationStage =
   | 'Offer'
   | 'Rejected';
 
+export type JobRegion = 'India' | 'Worldwide Remote' | 'United States' | 'Europe';
+
 export interface JobPost {
   id: string;
   title: string;
   company: string;
   platform: 'LinkedIn' | 'Naukri' | 'Indeed' | 'Glassdoor' | 'Direct';
   location: string;
+  region: JobRegion;
   workplaceType: 'Remote' | 'Hybrid' | 'On-site';
   salary: string;
   experienceRequired: string;
@@ -82,6 +85,8 @@ export interface JobPost {
   postedDate: string;
   url: string;
   matchScore: number;
+  atsScore: number;
+  atsStatus: 'Top 5% Candidate' | 'Strong ATS Match' | 'Needs Optimization';
   matchedSkills: string[];
   missingSkills: string[];
   applicationStage: ApplicationStage;
