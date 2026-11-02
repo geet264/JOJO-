@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 300px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .logo {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 14px;
+    }
+    .title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e1b4b;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .status-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .badge {
+      background: #ecfdf5;
+      color: #047857;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid #a7f3d0;
+    }
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .link-btn {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      font-size: 11px;
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">J</div>
+    <div>
+      <div class="title">JOJO Sync Companion</div>
+      <div class="subtitle">Multi-Platform Career Bridge</div>
+    </div>
+  </div>
+
+  <div class="status-card">
+    <div class="status-row">
+      <span style="font-weight: 600;">Engine Status:</span>
+      <span class="badge" id="engine-status">Checking...</span>
+    </div>
+    <div class="status-row">
+      <span style="color: #64748b;">Target Platforms:</span>
+      <span style="font-weight: 600;">LinkedIn, Naukri, Indeed</span>
+    </div>
+    <div class="status-row">
+      <span style="color: #64748b;">Active Profile:</span>
+      <span style="font-weight: 600;" id="user-name">Loading...</span>
+    </div>
+  </div>
+
+  <button class="btn" id="sync-btn">
+    🔄 Sync Profile to Current Tab
+  </button>
+
+  <a href="http://127.0.0.1:3000" target="_blank" class="link-btn">
+    Open JOJO Dashboard →
+  </a>
+
+  <script src="popup.js"></script>
+</body>
+</html>

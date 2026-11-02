@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "JOJO Sync Companion",
+  "version": "1.0.0",
+  "description": "Companion extension for JOJO Career OS. Connects and synchronizes your profile to LinkedIn, Naukri, and career portals.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "http://127.0.0.1:3000/*",
+    "https://*.linkedin.com/*",
+    "https://*.naukri.com/*",
+    "https://*.indeed.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "JOJO Career OS Sync"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/*",
+        "https://*.naukri.com/*",
+        "https://*.indeed.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
