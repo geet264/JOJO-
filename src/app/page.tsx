@@ -66,8 +66,19 @@ export default function Home() {
   // AI Tailor Modal state
   const [selectedTailorJob, setSelectedTailorJob] = useState<JobPost | null>(null);
 
-  // Fetch persisted data from disk on mount
+  // Fetch persisted data from disk on mount & restore user session
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('jojo_active_user');
+      if (savedUser) {
+        try {
+          setCurrentUser(JSON.parse(savedUser));
+        } catch {
+          // keep initial
+        }
+      }
+    }
+
     async function loadData() {
       try {
         const res = await fetch('/api/data');
@@ -121,10 +132,16 @@ export default function Home() {
 
   const handleLogout = () => {
     setCurrentUser(null);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('jojo_active_user');
+    }
   };
 
   const handleLoginSuccess = async (user: AuthUser) => {
     setCurrentUser(user);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('jojo_active_user', JSON.stringify(user));
+    }
 
     // Update profile data with user's choices
     const updatedProfile: UserProfile = {

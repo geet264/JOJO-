@@ -1,66 +1,41 @@
 {
   "profile": {
-    "id": "user_1",
-    "fullName": "Geeta Jogi",
-    "email": "geeta.jogi@altisec.com",
+    "id": "user_1793626295149",
+    "fullName": "TEST",
+    "email": "test@12.com",
     "phone": "+91 98765 43210",
-    "location": "Bangalore / Pune, India (Open to Remote Worldwide)",
+    "location": "Worldwide Remote",
     "currentTitle": "DevSecOps Engineer",
     "targetTitles": [
+      "DevSecOps Engineer",
       "Senior DevSecOps Engineer",
-      "Cloud Security Specialist",
-      "DevOps & Security Lead"
+      "DevSecOps Engineer Specialist"
     ],
     "summary": "DevSecOps specialist with 4+ years expertise in building secure CI/CD pipelines, container security, vulnerability management, cloud infrastructure (AWS/Azure), and automating compliance.",
     "yearsOfExperience": 4,
     "currentCTC": "14 LPA",
-    "expectedCTC": "22 - 25 LPA ($90k - $120k for Remote)",
-    "noticePeriod": "30 Days / Serving Notice",
+    "expectedCTC": "22 - 25 LPA",
+    "noticePeriod": "30 Days",
     "skills": [
       {
         "name": "DevSecOps",
         "level": "Expert",
-        "category": "Security & Ops"
-      },
-      {
-        "name": "CI/CD Pipelines (GitHub Actions / Jenkins)",
-        "level": "Expert",
-        "category": "DevOps"
+        "category": "Core"
       },
       {
         "name": "Docker & Kubernetes",
         "level": "Expert",
-        "category": "Containers"
+        "category": "Core"
       },
       {
         "name": "AWS Cloud Security",
-        "level": "Intermediate",
-        "category": "Cloud"
-      },
-      {
-        "name": "Terraform (IaC)",
-        "level": "Intermediate",
-        "category": "Infra"
-      },
-      {
-        "name": "SonarQube & SAST/DAST",
         "level": "Expert",
-        "category": "AppSec"
+        "category": "Core"
       },
       {
-        "name": "Trivy / Container Scanning",
+        "name": "CI/CD Pipelines (GitHub Actions / Jenkins)",
         "level": "Expert",
-        "category": "AppSec"
-      },
-      {
-        "name": "Python / Bash Scripting",
-        "level": "Intermediate",
-        "category": "Scripting"
-      },
-      {
-        "name": "Linux Administration",
-        "level": "Intermediate",
-        "category": "OS"
+        "category": "Core"
       }
     ],
     "experiences": [
@@ -115,7 +90,7 @@
       "portfolio": "https://geetajogi.dev"
     },
     "lastSyncedAt": "Just now",
-    "updatedAt": "2026-11-02T13:14:00.000Z"
+    "updatedAt": "2026-11-02T13:31:35.149Z"
   },
   "jobs": [
     {
@@ -139,18 +114,19 @@
       ],
       "postedDate": "2 hours ago",
       "url": "https://linkedin.com/jobs/view/devsecops-phonepe",
-      "matchScore": 95,
-      "atsScore": 96,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 77,
+      "atsScore": 75,
+      "atsStatus": "Strong ATS Match",
       "matchedSkills": [
         "DevSecOps",
         "Docker & Kubernetes",
         "AWS Cloud Security",
-        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "CI/CD Pipelines (GitHub Actions / Jenkins)"
+      ],
+      "missingSkills": [
         "SonarQube & SAST/DAST",
         "Terraform (IaC)"
       ],
-      "missingSkills": [],
       "applicationStage": "Wishlist",
       "notes": "Strong match for payment gateway security compliance team."
     },
@@ -175,18 +151,19 @@
       ],
       "postedDate": "5 hours ago",
       "url": "https://about.gitlab.com/jobs",
-      "matchScore": 91,
-      "atsScore": 93,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 65,
+      "atsScore": 65,
+      "atsStatus": "Needs Optimization",
       "matchedSkills": [
         "DevSecOps",
         "Docker & Kubernetes",
-        "AWS Cloud Security",
+        "AWS Cloud Security"
+      ],
+      "missingSkills": [
         "Terraform (IaC)",
         "Trivy / Container Scanning",
         "Python / Bash Scripting"
       ],
-      "missingSkills": [],
       "applicationStage": "Wishlist",
       "notes": "Full remote opportunity with US dollar compensation."
     },
@@ -210,17 +187,18 @@
       ],
       "postedDate": "1 day ago",
       "url": "https://datadog.com/careers",
-      "matchScore": 88,
-      "atsScore": 89,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 74,
+      "atsScore": 73,
+      "atsStatus": "Strong ATS Match",
       "matchedSkills": [
         "DevSecOps",
-        "SonarQube & SAST/DAST",
         "CI/CD Pipelines (GitHub Actions / Jenkins)",
         "Docker & Kubernetes",
         "AWS Cloud Security"
       ],
-      "missingSkills": [],
+      "missingSkills": [
+        "SonarQube & SAST/DAST"
+      ],
       "applicationStage": "Wishlist"
     },
     {
@@ -244,17 +222,17 @@
       ],
       "postedDate": "1 day ago",
       "url": "https://naukri.com/job-listings-devsecops-razorpay",
-      "matchScore": 84,
-      "atsScore": 86,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 53,
+      "atsScore": 55,
+      "atsStatus": "Needs Optimization",
       "matchedSkills": [
         "DevSecOps",
         "AWS Cloud Security",
-        "Trivy / Container Scanning",
-        "Docker & Kubernetes",
-        "Terraform (IaC)"
+        "Docker & Kubernetes"
       ],
       "missingSkills": [
+        "Trivy / Container Scanning",
+        "Terraform (IaC)",
         "Golang"
       ],
       "applicationStage": "Applied",
@@ -281,17 +259,18 @@
       ],
       "postedDate": "2 days ago",
       "url": "https://revolut.com/careers",
-      "matchScore": 85,
-      "atsScore": 88,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 86,
+      "atsScore": 83,
+      "atsStatus": "Strong ATS Match",
       "matchedSkills": [
         "DevSecOps",
         "Docker & Kubernetes",
         "AWS Cloud Security",
-        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "CI/CD Pipelines (GitHub Actions / Jenkins)"
+      ],
+      "missingSkills": [
         "Linux Administration"
       ],
-      "missingSkills": [],
       "applicationStage": "Wishlist"
     },
     {
@@ -314,17 +293,18 @@
       ],
       "postedDate": "3 days ago",
       "url": "https://linkedin.com/jobs/view/appsec-zomato",
-      "matchScore": 82,
-      "atsScore": 85,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 32,
+      "atsScore": 37,
+      "atsStatus": "Needs Optimization",
       "matchedSkills": [
-        "CI/CD Pipelines (GitHub Actions / Jenkins)",
+        "CI/CD Pipelines (GitHub Actions / Jenkins)"
+      ],
+      "missingSkills": [
         "Trivy / Container Scanning",
         "SonarQube & SAST/DAST",
         "Linux Administration",
         "Python / Bash Scripting"
       ],
-      "missingSkills": [],
       "applicationStage": "Screening",
       "appliedDate": "2026-10-25",
       "notes": "HR call scheduled for Thursday 3:00 PM."
@@ -349,17 +329,17 @@
       ],
       "postedDate": "4 days ago",
       "url": "https://naukri.com/job-listings-swiggy-devsecops",
-      "matchScore": 78,
-      "atsScore": 76,
+      "matchScore": 72,
+      "atsScore": 71,
       "atsStatus": "Strong ATS Match",
       "matchedSkills": [
         "DevSecOps",
         "Docker & Kubernetes",
-        "AWS Cloud Security",
-        "Terraform (IaC)"
+        "AWS Cloud Security"
       ],
       "missingSkills": [
-        "Falco Runtime Security"
+        "Falco Runtime Security",
+        "Terraform (IaC)"
       ],
       "applicationStage": "Technical",
       "appliedDate": "2026-10-22",
@@ -385,17 +365,18 @@
       ],
       "postedDate": "12 hours ago",
       "url": "https://linkedin.com/jobs/view/inmobi-devops",
-      "matchScore": 80,
-      "atsScore": 82,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 60,
+      "atsScore": 61,
+      "atsStatus": "Needs Optimization",
       "matchedSkills": [
         "CI/CD Pipelines (GitHub Actions / Jenkins)",
         "Docker & Kubernetes",
-        "AWS Cloud Security",
+        "AWS Cloud Security"
+      ],
+      "missingSkills": [
         "Terraform (IaC)",
         "Linux Administration"
       ],
-      "missingSkills": [],
       "applicationStage": "Wishlist"
     },
     {
@@ -418,17 +399,18 @@
       ],
       "postedDate": "1 day ago",
       "url": "https://canonical.com/careers",
-      "matchScore": 86,
-      "atsScore": 88,
-      "atsStatus": "Top 5% Candidate",
+      "matchScore": 60,
+      "atsScore": 61,
+      "atsStatus": "Needs Optimization",
       "matchedSkills": [
-        "Linux Administration",
         "Docker & Kubernetes",
-        "Python / Bash Scripting",
         "CI/CD Pipelines (GitHub Actions / Jenkins)",
         "DevSecOps"
       ],
-      "missingSkills": [],
+      "missingSkills": [
+        "Linux Administration",
+        "Python / Bash Scripting"
+      ],
       "applicationStage": "Wishlist"
     },
     {
@@ -451,8 +433,8 @@
       ],
       "postedDate": "5 days ago",
       "url": "https://indeed.com/viewjob?jk=data-platform-target",
-      "matchScore": 28,
-      "atsScore": 32,
+      "matchScore": 18,
+      "atsScore": 25,
       "atsStatus": "Needs Optimization",
       "matchedSkills": [],
       "missingSkills": [

@@ -15,7 +15,9 @@ import {
   ArrowLeft,
   Sparkles,
   ShieldCheck,
-  Building
+  Building,
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { AuthUser } from '@/types';
 
@@ -69,6 +71,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 }) => {
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [step, setStep] = useState<1 | 2>(1);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Form State
   const [fullName, setFullName] = useState('');
@@ -112,88 +115,110 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     );
   };
 
-  const handleQuickDemoLogin = () => {
-    const demoUser: AuthUser = {
-      id: 'user_1',
-      fullName: 'Geeta Jogi',
-      email: 'geeta.jogi@altisec.com',
-      role: 'DevSecOps Engineer',
-      experienceLevel: '4 Years',
-      noticePeriod: '30 Days / Serving Notice',
-      currentCTC: '14 LPA',
-      expectedCTC: '22 - 25 LPA ($90k - $120k for Remote)',
-      preferredLocation: 'Worldwide Remote & India',
-      targetPlatforms: ['linkedin', 'naukri', 'indeed'],
-      skills: [
-        'DevSecOps',
-        'Docker & Kubernetes',
-        'AWS Cloud Security',
-        'CI/CD Pipelines (GitHub Actions / Jenkins)',
-        'Terraform (IaC)',
-        'SonarQube & SAST/DAST',
-        'Trivy / Container Scanning',
-        'Python / Bash Scripting',
-        'Linux Administration',
-      ],
-    };
-    onLoginSuccess(demoUser);
-    onClose();
-  };
-
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) {
-      setErrorMsg('Please enter your email');
-      return;
+  const handleQuickDemoLogin = async () => {
+    setErrorMsg('');
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'geeta.jogi@altisec.com', password: 'password123' }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.user) {
+        onLoginSuccess(data.user);
+        onClose();
+      } else {
+        setErrorMsg(data.error || 'Quick login failed.');
+      }
+    } catch {
+      setErrorMsg('Connection error with backend database. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-    const loggedInUser: AuthUser = {
-      id: `user_${Date.now()}`,
-      fullName: email.split('@')[0].replace('.', ' ').toUpperCase(),
-      email,
-      role: 'DevSecOps Engineer',
-      experienceLevel: '4 Years',
-      noticePeriod: '30 Days',
-      currentCTC: '14 LPA',
-      expectedCTC: '22 - 25 LPA',
-      preferredLocation: 'Worldwide Remote',
-      targetPlatforms: ['linkedin', 'naukri'],
-      skills: ['DevSecOps', 'Docker & Kubernetes', 'AWS Cloud Security', 'CI/CD Pipelines (GitHub Actions / Jenkins)'],
-    };
-    onLoginSuccess(loggedInUser);
-    onClose();
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !email) {
-      setErrorMsg('Please provide your name and email');
+    setErrorMsg('');
+
+    if (!email || !password) {
+      setErrorMsg('Please enter both your email address and password.');
       return;
     }
 
-    const newUser: AuthUser = {
-      id: `user_${Date.now()}`,
-      fullName,
-      email,
-      password,
-      role: customRole || role,
-      experienceLevel,
-      noticePeriod,
-      currentCTC,
-      expectedCTC,
-      preferredLocation,
-      targetPlatforms: selectedPlatforms,
-      skills: selectedSkills,
-    };
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
 
-    onLoginSuccess(newUser);
-    onClose();
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.error || 'Authentication failed. Please verify credentials.');
+        return;
+      }
+
+      onLoginSuccess(data.user);
+      onClose();
+    } catch {
+      setErrorMsg('Unable to connect to JOJO authentication database.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    if (!fullName || !email || !password) {
+      setErrorMsg('Please fill in your name, email, and password.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName,
+          email,
+          password,
+          role: customRole || role,
+          experienceLevel,
+          noticePeriod,
+          currentCTC,
+          expectedCTC,
+          preferredLocation,
+          targetPlatforms: selectedPlatforms,
+          skills: selectedSkills,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setErrorMsg(data.error || 'Failed to create account.');
+        return;
+      }
+
+      onLoginSuccess(data.user);
+      onClose();
+    } catch {
+      setErrorMsg('Error connecting to backend database.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
       <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8">
         {/* Header bar */}
-        <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-purple-900 p-6 sm:p-8 text-white relative">
+        <div className="bg-gradient-to-r from-indigo-950 via-indigo-900 to-purple-950 p-6 sm:p-8 text-white relative">
           <button
             onClick={onClose}
             className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-colors"
@@ -206,15 +231,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               JOJO Career OS
             </span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30">
+              Database Auth Active
+            </span>
           </div>
 
           <h2 className="text-2xl font-black tracking-tight">
-            {mode === 'login' ? 'Welcome Back to JOJO' : 'Create Your JOJO Account'}
+            {mode === 'login' ? 'Log In to Your JOJO Account' : 'Create Account & Save to Database'}
           </h2>
           <p className="text-xs sm:text-sm text-indigo-200 mt-1 max-w-md">
             {mode === 'login'
-              ? 'Log in to sync your profile across LinkedIn, Naukri, and track 80%+ match jobs.'
-              : 'Set up your master profile once. Sync anywhere, filter worldwide remote jobs with 80%+ match.'}
+              ? 'Enter your registered credentials to access your dashboard, sync engine, and 80%+ match jobs.'
+              : 'Register your account to save your credentials to the backend database and configure your auto-sync.'}
           </p>
 
           {/* Mode Switcher Tabs */}
@@ -247,8 +275,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {/* Content Body */}
         <div className="p-6 sm:p-8 space-y-6">
           {errorMsg && (
-            <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
-              {errorMsg}
+            <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2.5 animate-shake">
+              <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+              <span>{errorMsg}</span>
             </div>
           )}
 
@@ -261,6 +290,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="email"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. geeta.jogi@altisec.com"
@@ -275,6 +305,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="password"
+                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -288,17 +319,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <input type="checkbox" defaultChecked className="rounded border-slate-300 text-indigo-600" />
                   Remember this device
                 </label>
-                <a href="#forgot" onClick={(e) => e.preventDefault()} className="text-indigo-600 font-bold hover:underline">
-                  Forgot password?
-                </a>
+                <span className="text-[11px] text-slate-400">
+                  Backend auth verification enabled
+                </span>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                Sign In to JOJO
-                <ArrowRight className="w-4 h-4" />
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Verifying Credentials with Database...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Verify &amp; Log In to JOJO</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
 
               <div className="relative my-4">
@@ -306,18 +347,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <div className="w-full border-t border-slate-200" />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="bg-white px-3 text-slate-400 font-medium">or continue with</span>
+                  <span className="bg-white px-3 text-slate-400 font-medium">or test with demo database account</span>
                 </div>
               </div>
 
               {/* 1-Click Demo Login */}
               <button
                 type="button"
+                disabled={isSubmitting}
                 onClick={handleQuickDemoLogin}
                 className="w-full py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold rounded-xl text-xs transition-all flex items-center justify-center gap-2"
               >
-                <ShieldCheck className="w-4 h-4 text-indigo-600" />
-                One-Click Quick Login as Geeta Jogi (Senior DevSecOps)
+                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <span>Test Login with Geeta Jogi Database Account (`password123`)</span>
               </button>
             </form>
           ) : (
@@ -334,7 +376,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     1
                   </div>
                   <span className={`text-xs font-bold ${step === 1 ? 'text-slate-900' : 'text-slate-500'}`}>
-                    Account Details
+                    Account Credentials
                   </span>
                 </div>
                 <div className="w-12 h-0.5 bg-slate-200" />
@@ -371,7 +413,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Email Address *</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Email Address * (Used for login)</label>
                     <div className="relative">
                       <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                       <input
@@ -386,7 +428,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Set Password *</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Password * (Saved to backend database)</label>
                     <div className="relative">
                       <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                       <input
@@ -394,7 +436,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Minimum 8 characters"
+                        placeholder="Minimum 4 characters"
                         className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium"
                       />
                     </div>
@@ -403,8 +445,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   <button
                     type="button"
                     onClick={() => {
-                      if (!fullName || !email) {
-                        setErrorMsg('Please fill in your name and email to proceed');
+                      if (!fullName || !email || !password) {
+                        setErrorMsg('Please fill in your name, email, and password to proceed.');
+                        return;
+                      }
+                      if (password.length < 4) {
+                        setErrorMsg('Password should be at least 4 characters long.');
                         return;
                       }
                       setErrorMsg('');
@@ -412,7 +458,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     }}
                     className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2"
                   >
-                    <span>Next: Choose Career &amp; Sync Options</span>
+                    <span>Next: Set Career Profile &amp; Sync Options</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -606,10 +652,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                      disabled={isSubmitting}
+                      className="flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                     >
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>Complete Registration &amp; Launch JOJO</span>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Saving to Database...</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>Save Account to Database &amp; Launch</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

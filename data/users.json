@@ -1,0 +1,55 @@
+[
+  {
+    "id": "user_1",
+    "fullName": "Geeta Jogi",
+    "email": "geeta.jogi@altisec.com",
+    "password": "password123",
+    "role": "DevSecOps Engineer",
+    "experienceLevel": "3-5 Years (Mid-Senior)",
+    "noticePeriod": "30 Days / Serving Notice",
+    "currentCTC": "14 LPA",
+    "expectedCTC": "22 - 25 LPA ($90k - $120k for Remote)",
+    "preferredLocation": "Worldwide Remote & India",
+    "targetPlatforms": [
+      "linkedin",
+      "naukri",
+      "indeed",
+      "instahyre"
+    ],
+    "skills": [
+      "DevSecOps",
+      "Docker & Kubernetes",
+      "AWS Cloud Security",
+      "CI/CD Pipelines (GitHub Actions / Jenkins)",
+      "Terraform (IaC)",
+      "SonarQube & SAST/DAST",
+      "Trivy / Container Scanning",
+      "Python / Bash Scripting",
+      "Linux Administration"
+    ],
+    "createdAt": "2026-11-02T13:35:53.127Z"
+  },
+  {
+    "fullName": "Test User",
+    "email": "test.user@example.com",
+    "password": "mypassword456",
+    "role": "Cloud Security Specialist",
+    "experienceLevel": "5-8 Years (Senior)",
+    "noticePeriod": "15 Days",
+    "currentCTC": "18 LPA",
+    "expectedCTC": "30 LPA",
+    "preferredLocation": "Worldwide Remote",
+    "targetPlatforms": [
+      "linkedin",
+      "naukri",
+      "indeed"
+    ],
+    "skills": [
+      "AWS Cloud Security",
+      "Docker & Kubernetes",
+      "Terraform (IaC)"
+    ],
+    "id": "usr_1793626587257",
+    "createdAt": "2026-11-02T13:36:27.257Z"
+  }
+]
