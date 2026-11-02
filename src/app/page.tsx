@@ -9,6 +9,7 @@ import { ProfileView } from '@/components/ProfileView';
 import { SyncManagerView } from '@/components/SyncManagerView';
 import { AITailorModal } from '@/components/AITailorModal';
 import { AuthModal } from '@/components/AuthModal';
+import { MobileExtensionGuideModal } from '@/components/MobileExtensionGuideModal';
 import { UserProfile, JobPost, SyncPlatformState, ApplicationStage, AuthUser } from '@/types';
 import { initialProfile, initialJobs, initialPlatforms } from '@/lib/initialData';
 import { enrichJobsWithMatchScores } from '@/lib/matchEngine';
@@ -62,6 +63,7 @@ export default function Home() {
   });
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+  const [isMobileGuideOpen, setIsMobileGuideOpen] = useState<boolean>(false);
 
   // AI Tailor Modal state
   const [selectedTailorJob, setSelectedTailorJob] = useState<JobPost | null>(null);
@@ -306,6 +308,7 @@ export default function Home() {
         currentUser={currentUser}
         onOpenAuth={handleOpenAuth}
         onLogout={handleLogout}
+        onOpenMobileGuide={() => setIsMobileGuideOpen(true)}
       />
 
       <main className="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-8 lg:px-12 pt-6 pb-12">
@@ -412,6 +415,13 @@ export default function Home() {
           onSaveTailoredData={handleSaveTailoredData}
         />
       )}
+
+      {/* Mobile & Phone Extension Guide Modal */}
+      <MobileExtensionGuideModal
+        isOpen={isMobileGuideOpen}
+        onClose={() => setIsMobileGuideOpen(false)}
+        userEmail={currentUser?.email}
+      />
     </div>
   );
 }

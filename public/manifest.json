@@ -1,0 +1,17 @@
+{
+  "name": "JOJO - All-in-One Career OS",
+  "short_name": "JOJO",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "description": "All-in-one Career OS with 80%+ match ATS check, Kanban tracking, and cross-platform auto-sync.",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
