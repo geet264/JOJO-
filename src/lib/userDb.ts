@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import bcrypt from 'bcryptjs';
 import { AuthUser, UserAccountData, UserProfile, SyncPlatformState } from '@/types';
 import { initialProfile, initialJobs } from '@/lib/initialData';
 import { enrichJobsWithMatchScores } from '@/lib/matchEngine';
@@ -8,7 +9,8 @@ const dataDir = path.join(process.cwd(), 'data');
 const usersFilePath = path.join(dataDir, 'users.json');
 
 export interface StoredUser extends AuthUser {
-  password?: string;
+  passwordHash?: string;
+  password?: string; // Legacy support during migration
   createdAt: string;
 }
 
@@ -17,7 +19,7 @@ const DEFAULT_USERS: StoredUser[] = [
     id: 'user_1',
     fullName: 'Geeta Jogi',
     email: 'geeta.jogi@altisec.com',
-    password: 'password123',
+    passwordHash: bcrypt.hashSync('password123', 12),
     role: 'DevSecOps Engineer',
     experienceLevel: '3-5 Years (Mid-Senior)',
     noticePeriod: '30 Days / Serving Notice',
@@ -52,11 +54,26 @@ export function ensureUsersDb(): StoredUser[] {
 
   try {
     const raw = fs.readFileSync(usersFilePath, 'utf-8');
-    const users = JSON.parse(raw);
+    const users: StoredUser[] = JSON.parse(raw);
     if (!Array.isArray(users) || users.length === 0) {
       fs.writeFileSync(usersFilePath, JSON.stringify(DEFAULT_USERS, null, 2), 'utf-8');
       return DEFAULT_USERS;
     }
+
+    // Auto-migrate any plaintext passwords to bcrypt hashes
+    let modified = false;
+    users.forEach((u) => {
+      if (u.password && (!u.passwordHash || !u.passwordHash.startsWith('$2'))) {
+        u.passwordHash = bcrypt.hashSync(u.password, 12);
+        delete u.password;
+        modified = true;
+      }
+    });
+
+    if (modified) {
+      fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf-8');
+    }
+
     return users;
   } catch {
     fs.writeFileSync(usersFilePath, JSON.stringify(DEFAULT_USERS, null, 2), 'utf-8');
@@ -74,7 +91,7 @@ export function findUserByEmail(email: string): StoredUser | undefined {
   return users.find((u) => u.email.trim().toLowerCase() === normalized);
 }
 
-export function createUser(userData: Omit<StoredUser, 'id' | 'createdAt'>): { success: boolean; user?: AuthUser; error?: string } {
+export function createUser(userData: Omit<StoredUser, 'id' | 'createdAt'> & { password?: string }): { success: boolean; user?: AuthUser; error?: string } {
   const users = ensureUsersDb();
   const normalizedEmail = userData.email.trim().toLowerCase();
 
@@ -84,18 +101,24 @@ export function createUser(userData: Omit<StoredUser, 'id' | 'createdAt'>): { su
     return { success: false, error: 'An account with this email address already exists. Please log in.' };
   }
 
+  const rawPassword = userData.password || 'password123';
+  const passwordHash = bcrypt.hashSync(rawPassword, 12);
+
+  const { password, ...cleanedData } = userData;
+
   const newUser: StoredUser = {
-    ...userData,
+    ...cleanedData,
     id: `usr_${Date.now()}`,
     email: normalizedEmail,
+    passwordHash,
     createdAt: new Date().toISOString(),
   };
 
   users.push(newUser);
   fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf-8');
 
-  // Strip password for return payload
-  const { password, ...safeUser } = newUser;
+  // Strip password and passwordHash for return payload
+  const { passwordHash: _, password: __, ...safeUser } = newUser;
   return { success: true, user: safeUser };
 }
 
@@ -111,16 +134,26 @@ export function authenticateUser(email: string, passwordAttempt: string): { succ
     };
   }
 
-  // Check password
-  if (user.password !== passwordAttempt) {
+  // Check password against bcrypt hash or legacy plaintext
+  const hash = user.passwordHash || (user.password ? bcrypt.hashSync(user.password, 12) : '');
+  const isMatch = hash ? bcrypt.compareSync(passwordAttempt, hash) : false;
+
+  if (!isMatch) {
     return { 
       success: false, 
       error: 'Incorrect password. Please check your credentials and try again.' 
     };
   }
 
-  // Password matches - return safe user without password
-  const { password, ...safeUser } = user;
+  // Ensure passwordHash is saved and plain password removed
+  if (user.password) {
+    user.passwordHash = hash;
+    delete user.password;
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2), 'utf-8');
+  }
+
+  // Password matches - return safe user without password or hash
+  const { passwordHash: _, password: __, ...safeUser } = user;
   return { success: true, user: safeUser };
 }
 

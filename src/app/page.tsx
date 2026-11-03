@@ -68,11 +68,15 @@ export default function Home() {
   // AI Tailor Modal state
   const [selectedTailorJob, setSelectedTailorJob] = useState<JobPost | null>(null);
 
-  // Dedicated multi-account data loader
+  // Dedicated multi-account data loader with secure session token
   const loadUserData = async (userId: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/data?userId=${userId}`);
+      const token = typeof window !== 'undefined' ? localStorage.getItem('jojo_auth_token') : null;
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
+      const res = await fetch(`/api/data?userId=${userId}`, { headers });
       if (res.ok) {
         const json = await res.json();
         if (json.profile) {
@@ -117,9 +121,13 @@ export default function Home() {
   ) => {
     try {
       const targetUserId = currentUser?.id || updatedProfile.id || 'user_1';
+      const token = typeof window !== 'undefined' ? localStorage.getItem('jojo_auth_token') : null;
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       await fetch('/api/data', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           userId: targetUserId,
           profile: updatedProfile,
@@ -143,13 +151,15 @@ export default function Home() {
     setCurrentUser(null);
     if (typeof window !== 'undefined') {
       localStorage.removeItem('jojo_active_user');
+      localStorage.removeItem('jojo_auth_token');
     }
   };
 
-  const handleLoginSuccess = async (user: AuthUser) => {
+  const handleLoginSuccess = async (user: AuthUser, token?: string) => {
     setCurrentUser(user);
     if (typeof window !== 'undefined') {
       localStorage.setItem('jojo_active_user', JSON.stringify(user));
+      if (token) localStorage.setItem('jojo_auth_token', token);
     }
     await loadUserData(user.id);
   };

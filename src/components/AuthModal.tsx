@@ -25,7 +25,7 @@ interface AuthModalProps {
   isOpen: boolean;
   initialMode?: 'login' | 'register';
   onClose: () => void;
-  onLoginSuccess: (user: AuthUser) => void;
+  onLoginSuccess: (user: AuthUser, token?: string) => void;
 }
 
 const COMMON_ROLES = [
@@ -126,7 +126,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       });
       const data = await res.json();
       if (res.ok && data.success && data.user) {
-        onLoginSuccess(data.user);
+        onLoginSuccess(data.user, data.token);
         onClose();
       } else {
         setErrorMsg(data.error || 'Quick login failed.');
@@ -161,7 +161,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         return;
       }
 
-      onLoginSuccess(data.user);
+      onLoginSuccess(data.user, data.token);
       onClose();
     } catch {
       setErrorMsg('Unable to connect to JOJO authentication database.');
@@ -205,7 +205,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         return;
       }
 
-      onLoginSuccess(data.user);
+      onLoginSuccess(data.user, data.token);
       onClose();
     } catch {
       setErrorMsg('Error connecting to backend database.');

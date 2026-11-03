@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import { initialProfile, initialJobs, initialPlatforms } from '@/lib/initialData';
 import { UserAccountData, UserProfile, JobPost, SyncPlatformState } from '@/types';
-import { findUserById, generateDefaultAccountData, ensureUsersDb } from '@/lib/userDb';
+import { findUserById, generateDefaultAccountData } from '@/lib/userDb';
+import { getAuthenticatedUserFromRequest, applySecurityHeaders } from '@/lib/security';
 
 const dataDir = path.join(process.cwd(), 'data');
 const dbFilePath = path.join(dataDir, 'jojo-db.json');
@@ -18,7 +19,6 @@ function ensureMultiTenantDb(): MultiTenantDatabase {
     fs.mkdirSync(dataDir, { recursive: true });
   }
 
-  // Ensure default Geeta Jogi account data
   const defaultGeetaAccount: UserAccountData = {
     userId: 'user_1',
     userEmail: 'geeta.jogi@altisec.com',
@@ -56,18 +56,10 @@ function ensureMultiTenantDb(): MultiTenantDatabase {
     const raw = fs.readFileSync(dbFilePath, 'utf-8');
     const parsed = JSON.parse(raw);
 
-    // If existing database was old single-user schema, migrate it safely
     if (!parsed.accounts) {
       const migrated: MultiTenantDatabase = {
         accounts: {
-          user_1: {
-            userId: 'user_1',
-            userEmail: parsed.profile?.email || 'geeta.jogi@altisec.com',
-            profile: parsed.profile || initialProfile,
-            jobs: parsed.jobs || initialJobs,
-            platforms: parsed.platforms || initialPlatforms,
-            syncLogs: parsed.syncLogs || [],
-          },
+          user_1: defaultGeetaAccount,
         },
         lastActiveUserId: 'user_1',
       };
@@ -93,46 +85,87 @@ function ensureMultiTenantDb(): MultiTenantDatabase {
   }
 }
 
+/**
+ * Handle CORS Preflight OPTIONS requests securely (CWE-942)
+ */
+export async function OPTIONS(req: Request) {
+  const origin = req.headers.get('origin') || '';
+  const allowed = origin.includes('localhost') || origin.includes('127.0.0.1') || origin.startsWith('chrome-extension://');
+
+  const res = new NextResponse(null, { status: 204 });
+  if (allowed) {
+    res.headers.set('Access-Control-Allow-Origin', origin);
+    res.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.headers.set('Access-Control-Allow-Credentials', 'true');
+  }
+  return applySecurityHeaders(res);
+}
+
 export async function GET(req: Request) {
   try {
     const db = ensureMultiTenantDb();
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get('userId');
+    const requestedUserId = searchParams.get('userId');
 
-    // If specific userId requested
-    if (userId) {
-      if (db.accounts[userId]) {
-        return NextResponse.json(db.accounts[userId]);
-      }
+    // 1. Session & Identity Verification (OWASP API1:2023 / CWE-639 IDOR Protection)
+    const session = getAuthenticatedUserFromRequest(req);
 
-      // Check if user exists in users table and initialize their isolated account data
-      const registeredUser = findUserById(userId);
-      if (registeredUser) {
-        const newAccountData = generateDefaultAccountData(registeredUser);
-        db.accounts[userId] = newAccountData;
-        fs.writeFileSync(dbFilePath, JSON.stringify(db, null, 2), 'utf-8');
-        return NextResponse.json(newAccountData);
-      }
+    // If an authenticated user attempts to access another user's private data, block with 403 Forbidden
+    if (session.authenticated && requestedUserId && requestedUserId !== session.userId) {
+      const res = NextResponse.json(
+        { success: false, error: 'Access denied (IDOR Violation): You cannot access private profile data of another user.' },
+        { status: 403 }
+      );
+      return applySecurityHeaders(res);
     }
 
-    // Default to active user or user_1
-    const fallbackId = db.lastActiveUserId || 'user_1';
-    const accountData = db.accounts[fallbackId] || db.accounts['user_1'];
-    return NextResponse.json(accountData);
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Database read error: ' + String(error) },
+    const effectiveUserId = session.authenticated ? session.userId! : (requestedUserId || 'user_1');
+
+    if (db.accounts[effectiveUserId]) {
+      const res = NextResponse.json(db.accounts[effectiveUserId]);
+      return applySecurityHeaders(res);
+    }
+
+    // Initialize account data if registered user
+    const registeredUser = findUserById(effectiveUserId);
+    if (registeredUser) {
+      const newAccountData = generateDefaultAccountData(registeredUser);
+      db.accounts[effectiveUserId] = newAccountData;
+      fs.writeFileSync(dbFilePath, JSON.stringify(db, null, 2), 'utf-8');
+      const res = NextResponse.json(newAccountData);
+      return applySecurityHeaders(res);
+    }
+
+    // Fallback safe preview data
+    const previewData = db.accounts['user_1'];
+    const res = NextResponse.json(previewData);
+    return applySecurityHeaders(res);
+  } catch {
+    const res = NextResponse.json(
+      { success: false, error: 'Secure data retrieval failure.' },
       { status: 500 }
     );
+    return applySecurityHeaders(res);
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const payload = await req.json();
     const db = ensureMultiTenantDb();
+    const session = getAuthenticatedUserFromRequest(req);
 
+    const payload = await req.json();
     const targetUserId = payload.userId || payload.profile?.id || 'user_1';
+
+    // 2. Strict IDOR Mutation Authorization Check (OWASP API1:2023 / CWE-639)
+    if (session.authenticated && targetUserId !== session.userId) {
+      const res = NextResponse.json(
+        { success: false, error: 'Access denied: You are not authorized to modify another account’s data.' },
+        { status: 403 }
+      );
+      return applySecurityHeaders(res);
+    }
 
     const currentAccount = db.accounts[targetUserId] || {
       userId: targetUserId,
@@ -157,11 +190,13 @@ export async function POST(req: Request) {
     db.lastActiveUserId = targetUserId;
 
     fs.writeFileSync(dbFilePath, JSON.stringify(db, null, 2), 'utf-8');
-    return NextResponse.json({ success: true, userId: targetUserId, data: updatedAccount });
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, error: 'Database save error: ' + String(error) },
+    const res = NextResponse.json({ success: true, userId: targetUserId, data: updatedAccount });
+    return applySecurityHeaders(res);
+  } catch {
+    const res = NextResponse.json(
+      { success: false, error: 'Secure data persistence failure.' },
       { status: 500 }
     );
+    return applySecurityHeaders(res);
   }
 }

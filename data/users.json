@@ -3,7 +3,6 @@
     "id": "user_1",
     "fullName": "Geeta Jogi",
     "email": "geeta.jogi@altisec.com",
-    "password": "password123",
     "role": "DevSecOps Engineer",
     "experienceLevel": "3-5 Years (Mid-Senior)",
     "noticePeriod": "30 Days / Serving Notice",
@@ -27,12 +26,12 @@
       "Python / Bash Scripting",
       "Linux Administration"
     ],
-    "createdAt": "2026-11-02T13:35:53.127Z"
+    "createdAt": "2026-11-02T13:35:53.127Z",
+    "passwordHash": "$2b$12$sdNS9Jl/borbLwMBBlomcePDd.xwcE60keY0abzNnG8R0s0CsYX9e"
   },
   {
     "fullName": "Test User",
     "email": "test.user@example.com",
-    "password": "mypassword456",
     "role": "Cloud Security Specialist",
     "experienceLevel": "5-8 Years (Senior)",
     "noticePeriod": "15 Days",
@@ -50,12 +49,12 @@
       "Terraform (IaC)"
     ],
     "id": "usr_1793626587257",
-    "createdAt": "2026-11-02T13:36:27.257Z"
+    "createdAt": "2026-11-02T13:36:27.257Z",
+    "passwordHash": "$2b$12$BSJcdFg5/c6x0QKCvRiWpecIWlvshiN7FtD4LqyX8ehySiBDW5R5q"
   },
   {
     "fullName": "Test",
     "email": "test@gamil.com",
-    "password": "123456",
     "role": "DevSecOps Engineer",
     "experienceLevel": "3-5 Years (Mid-Senior)",
     "noticePeriod": "30 Days",
@@ -76,12 +75,12 @@
       "Terraform (IaC)"
     ],
     "id": "usr_1793626808512",
-    "createdAt": "2026-11-02T13:40:08.512Z"
+    "createdAt": "2026-11-02T13:40:08.512Z",
+    "passwordHash": "$2b$12$anotki1SRlNxeRq26dzoCeSDHXD96pphdIHSRi64ddzHJfZCL7bsC"
   },
   {
     "fullName": "Priya Sharma",
     "email": "priya.sharma@example.com",
-    "password": "password789",
     "role": "QA Automation Lead",
     "experienceLevel": "5-8 Years (Senior)",
     "noticePeriod": "Immediate / Serving Notice",
@@ -100,6 +99,37 @@
       "CI/CD Pipelines (GitHub Actions / Jenkins)"
     ],
     "id": "usr_1793627281591",
-    "createdAt": "2026-11-02T13:48:01.592Z"
+    "createdAt": "2026-11-02T13:48:01.592Z",
+    "passwordHash": "$2b$12$XF5b94wkFLPxymHvmwXFKumGaNQHCn3euhTpp4qL3du.YiztRJGwC"
+  },
+  {
+    "fullName": "Geeta",
+    "email": "26geetajogi@gmail.com",
+    "role": "DevSecOps Engineer",
+    "experienceLevel": "3-5 Years (Mid-Senior)",
+    "noticePeriod": "30 Days",
+    "currentCTC": "4.3",
+    "expectedCTC": "14",
+    "preferredLocation": "Worldwide Remote",
+    "targetPlatforms": [
+      "linkedin",
+      "naukri",
+      "indeed",
+      "instahyre",
+      "wellfound",
+      "glassdoor"
+    ],
+    "skills": [
+      "DevSecOps",
+      "Docker & Kubernetes",
+      "AWS Cloud Security",
+      "CI/CD Pipelines (GitHub Actions / Jenkins)",
+      "Terraform (IaC)",
+      "Python / Bash Scripting",
+      "Linux Administration"
+    ],
+    "id": "usr_1793683822128",
+    "passwordHash": "$2b$12$31b8UI/uExvp5YCur81eaOeeTpd.kZ51Jfq/s9dJYHKD5jaDmGdKm",
+    "createdAt": "2026-11-03T05:30:22.128Z"
   }
 ]

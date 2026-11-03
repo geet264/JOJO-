@@ -1,51 +1,58 @@
-// JOJO Chrome Companion - Content Script
+// JOJO Chrome Companion - Content Script (Hardened DOM & Safe Output)
 (function () {
-  console.log('[JOJO] Companion loaded on:', window.location.hostname);
+  console.log('[JOJO] Secure Companion loaded on:', window.location.hostname);
 
-  // Floating JOJO Quick Sync Badge
-  const badge = document.createElement('div');
-  badge.id = 'jojo-floating-widget';
-  badge.innerHTML = `
-    <div style="
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 999999;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      color: white;
-      padding: 10px 16px;
-      border-radius: 9999px;
-      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5), 0 8px 10px -6px rgba(79, 70, 229, 0.5);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.2s ease;
-    ">
-      <span style="
-        background: white;
-        color: #4f46e5;
-        width: 20px;
-        height: 20px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 900;
-        font-size: 12px;
-      ">J</span>
-      <span>JOJO Sync</span>
-    </div>
-  `;
+  // Floating JOJO Quick Sync Badge created safely via DOM nodes (CWE-79 Remediation)
+  const badgeContainer = document.createElement('div');
+  badgeContainer.id = 'jojo-floating-widget';
 
-  document.body.appendChild(badge);
+  const badgeBtn = document.createElement('div');
+  Object.assign(badgeBtn.style, {
+    position: 'fixed',
+    bottom: '24px',
+    right: '24px',
+    zIndex: '999999',
+    background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+    color: 'white',
+    padding: '10px 16px',
+    borderRadius: '9999px',
+    boxShadow: '0 10px 25px -5px rgba(79, 70, 229, 0.5), 0 8px 10px -6px rgba(79, 70, 229, 0.5)',
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontSize: '13px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
+    transition: 'all 0.2s ease',
+  });
 
-  // Widget Click Menu
-  badge.addEventListener('click', async () => {
+  const iconSpan = document.createElement('span');
+  Object.assign(iconSpan.style, {
+    background: 'white',
+    color: '#4f46e5',
+    width: '20px',
+    height: '20px',
+    borderRadius: '6px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: '900',
+    fontSize: '12px',
+  });
+  iconSpan.textContent = 'J';
+
+  const textSpan = document.createElement('span');
+  textSpan.textContent = 'JOJO Sync';
+
+  badgeBtn.appendChild(iconSpan);
+  badgeBtn.appendChild(textSpan);
+  badgeContainer.appendChild(badgeBtn);
+  document.body.appendChild(badgeContainer);
+
+  // Widget Click Menu with sanitized output
+  badgeBtn.addEventListener('click', async () => {
     try {
       const res = await fetch('http://127.0.0.1:3000/api/data');
       if (!res.ok) throw new Error('Local server not reachable');
@@ -64,7 +71,7 @@
 
       const copyText = `${profile.currentTitle} | ${profile.skills.map(s => s.name).join(' • ')} | Notice: ${profile.noticePeriod}`;
       navigator.clipboard.writeText(copyText);
-    } catch (e) {
+    } catch {
       alert(
         `⚠️ Could not connect to local JOJO.\n\n` +
         `Make sure JOJO is running at http://127.0.0.1:3000`
